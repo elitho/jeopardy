@@ -1,0 +1,46 @@
+export const colors = {
+  BEKK_SORT: '#0e0e0e',
+  BEKK_HVIT: '#ffffff',
+  SOLOPPGANG: '#FFB88D',
+  SOLOPPGANG_KONTRAST: '#FF8034',
+  SKYFRITT: '#B1E8FF',
+  SKYFRITT_KONTRAST: '#43CBFF',
+  SOLNEDGANG: '#FF9999',
+  SOLNEDGANG_KONTRAST: '#FF5B5B',
+  KVELD: '#E5B1FF',
+  KVELD_KONTRAST: '#8E24C9',
+  NATT: '#6D7ABB',
+  NATT_KONTRAST: '#162365',
+  REGN: '#BCCEDD',
+  REGN_KONTRAST: '#7E9CB9',
+  OVERSKYET: '#E7E7E7',
+  OVERSKYET_KONTRAST: '#CECECE',
+  SOL: '#FFF2AD',
+  SOL_KONTRAST: '#FFF02B',
+  GRØNN: '#A1F5E3',
+  GRØNN_KONTRAST: '#16DBC4',
+};
+
+export const colorMap: Record<number, string> =  {
+  0: colors.SOLOPPGANG,
+  1: colors.SKYFRITT,
+  2: colors.SOLNEDGANG,
+  3: colors.GRØNN,
+  4: colors.SOL,
+  5: colors.KVELD,
+  6: colors.NATT,
+  7: colors.REGN,
+  8: colors.OVERSKYET,
+};
+
+export const contrastColorMap: Record<number, string> =  {
+  0: colors.SOLOPPGANG_KONTRAST,
+  1: colors.SKYFRITT_KONTRAST,
+  2: colors.SOLNEDGANG_KONTRAST,
+  3: colors.GRØNN_KONTRAST,
+  4: colors.SOL_KONTRAST,
+  5: colors.KVELD_KONTRAST,
+  6: colors.NATT_KONTRAST,
+  7: colors.REGN_KONTRAST,
+  8: colors.OVERSKYET_KONTRAST,
+};

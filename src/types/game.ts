@@ -1,9 +1,10 @@
 export enum Entity {
   SLURKER = 'Slurker',
+  SLURK = 'Slurk',
   POENG = 'Poeng'
 }
 
-export type Points = Entity.SLURKER | Entity.POENG
+export type Points = Entity.SLURKER | Entity.SLURK | Entity.POENG
 
 export type Question = {
   value: number,

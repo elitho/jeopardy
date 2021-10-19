@@ -12,12 +12,18 @@ const Title = styled.h2`
   margin: 0;
 `
 
-export const CategoryColumn = ({ category }: {category: Category}) => {
+export const CategoryColumn = ({category, categoryIndex}: { category: Category, categoryIndex: number }) => {
   return (
     <Container>
       <Title>{category.name}</Title>
-      {category.questions.map((question) => (
-        <QuestionCard question={question} />
+      {category.questions.map((question, index) => (
+        <QuestionCard
+          key={index}
+          question={question}
+          categoryIndex={categoryIndex}
+          questionIndex={index}
+          categoryName={category.name}
+        />
       ))}
     </Container>
   );
