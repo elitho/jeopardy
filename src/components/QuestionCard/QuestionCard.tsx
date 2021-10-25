@@ -1,24 +1,31 @@
 import { Question } from "types";
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import cross_black from 'icons/cross_black.svg';
 import smiley_correct from 'icons/emoji_1.svg'
 import smiley_wrong from 'icons/emoji_2.svg'
 import { colors, colorMap, contrastColorMap } from "shared";
 
-const Card = styled.div<{ categoryIndex: number, questionIndex: number, active: boolean }>`
-  font-weight: 100;
+const Box = styled.div<{ active: boolean, zindex: string }>`
   height: 120px;
   width: 194px;
-  background: ${props => (colorMap[props.categoryIndex])};
-  transition-duration: .5s;
-  transition-property: z-index,border-radius,box-shadow,transform;
+  perspective: 1000px;
+  z-index: ${({zindex}) => zindex};
+`
+
+const Card = styled.div<{ categoryIndex: number, questionIndex: number, active: boolean }>`
+  font-weight: 100;
+  height: 100%;
+  width: 100%;
+  background: ${({categoryIndex}) => (colorMap[categoryIndex])};
+  transition-duration: .6s;
+  transition-timing-function: cubic-bezier(0.68, -0.25, 0.27, 1.25);
+  transition-property: border-radius,box-shadow,transform;
   transform-style: preserve-3d;
   position: relative;
-  cursor: ${props => (props.active ? 'auto' : 'pointer')};
-  z-index: ${props => (props.active ? '3' : '0')};
-  border-radius: ${props => (props.active ? '2px' : '8px')};
-  box-shadow: ${props => (props.active ? '-1px 1px 1px 0 ' + colors.OVERSKYET_KONTRAST : '2px 2px 2px 0 ' + colors.OVERSKYET_KONTRAST)};
+  cursor: ${({active}) => (active ? 'auto' : 'pointer')};
+  border-radius: ${({active}) => (active ? '2px' : '8px')};
+  box-shadow: ${({active}) => (active ? '-1px 1px 1px 0 ' + colors.OVERSKYET_KONTRAST : '2px 2px 2px 0 ' + colors.OVERSKYET_KONTRAST)};
   transform: ${props => (props.active
   ? 'rotateY(180deg) ' +
   'scale(5.9, 5.9) ' +
@@ -31,16 +38,11 @@ const Card = styled.div<{ categoryIndex: number, questionIndex: number, active: 
   }
 `
 
-// 'scale(5.35, 5.9) ' +
-// 'translateX(' + ((40.5 - (props.categoryIndex * 20.3)) * -1) + '%) ' +
-// 'translateY(' + (35.5 - (props.questionIndex * 19.2)) + '%)'
-
 const Front = styled.div`
   backface-visibility: hidden;
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 2;
   transform: rotateY(0deg);
   width: 100%;
   height: 100%;
@@ -54,7 +56,7 @@ const Span = styled.span`
 `
 
 const Back = styled.div`
-  padding: 0.6em 1em;
+  padding: 0.6rem 1rem;
   backface-visibility: hidden;
   position: absolute;
   top: 0;
@@ -102,7 +104,7 @@ const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  gap: 1em;
+  gap: 1rem;
 `
 
 
@@ -130,30 +132,40 @@ type Props = {
 
 export const QuestionCard = ({question, categoryIndex, questionIndex, categoryName}: Props) => {
   const [active, setActive] = useState(false);
+  const [zindex, setZindex] = useState('0');
+
+  useEffect(() => console.log(zindex), [zindex]);
 
   const open = () => {
     setActive(true);
+    setZindex('3');
   }
 
   const close = () => {
     setActive(false);
+    console.log(zindex);
+    setTimeout(() => {
+      setZindex('0');
+    }, 600);
   }
 
   return (
-    <Card active={active} categoryIndex={categoryIndex} questionIndex={questionIndex}>
-      <Front onClick={open}>
-        <Span>{question.value + ' ' + question.entity}</Span>
-      </Front>
-      <Back>
-        <CloseButton onClick={close}><Img src={cross_black} alt={'close button'} /></CloseButton>
-        <Title>{categoryName + ' - ' + question.value + ' ' + question.entity}</Title>
-        <QuestionSpan>{question.question}</QuestionSpan>
-        <AnswerSpan>Se svar</AnswerSpan>
-        <ButtonContainer>
-          <SmileyButton><Smiley src={smiley_wrong} alt={'Wrong smiley'} /></SmileyButton>
-          <SmileyButton><Smiley src={smiley_correct} alt={'Correct smiley'} /></SmileyButton>
-        </ButtonContainer>
-      </Back>
-    </Card>
+    <Box active={active} zindex={zindex}>
+      <Card active={active} categoryIndex={categoryIndex} questionIndex={questionIndex}>
+        <Front onClick={open}>
+          <Span>{question.value + ' ' + question.entity}</Span>
+        </Front>
+        <Back>
+          <CloseButton onClick={close}><Img src={cross_black} alt={'close button'}/></CloseButton>
+          <Title>{categoryName + ' - ' + question.value + ' ' + question.entity}</Title>
+          <QuestionSpan>{question.question}</QuestionSpan>
+          <AnswerSpan>Se svar</AnswerSpan>
+          <ButtonContainer>
+            <SmileyButton><Smiley src={smiley_wrong} alt={'Wrong smiley'}/></SmileyButton>
+            <SmileyButton><Smiley src={smiley_correct} alt={'Correct smiley'}/></SmileyButton>
+          </ButtonContainer>
+        </Back>
+      </Card>
+    </Box>
   );
 }

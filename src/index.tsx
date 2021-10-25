@@ -6,14 +6,22 @@ import { BrowserRouter } from "react-router-dom";
 import { colors } from "shared";
 
 const GlobalStyle = createGlobalStyle`
+  html {
+    height: 100%;
+    width: 100%;
+  }
+
   body {
+    height: 100%;
+    width: 100%;
     margin: 0;
     font-family: DINOT-Light, sans-serif;
     font-weight: 100;
-    color: ${colors.BEKK_SORT}
+    color: ${colors.BEKK_SORT};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     box-sizing: border-box;
+    overflow: hidden;
   }
   
   h1 {
@@ -40,6 +48,11 @@ const GlobalStyle = createGlobalStyle`
   
   * {
     box-sizing: border-box;
+  }
+  
+  #root {
+    height: 100%;
+    width: 100%;
   }
 `
 

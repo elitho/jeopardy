@@ -3,15 +3,14 @@ import { CategoryColumn } from "components";
 import { testGameObject } from "shared";
 
 const Container = styled.div`
-  padding: 2em;
+  padding: 4rem;
   display: flex;
   flex-direction: row;
   height: 100%;
   width: 100%;
   justify-content: center;
-  gap: 1em;
+  gap: 1rem;
   text-align: center;
-  margin-top: 2em;
 `
 
 export const GameBoard = () => {

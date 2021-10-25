@@ -5,7 +5,7 @@ import { QuestionCard } from "components";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1em;
+  gap: 1rem;
 `
 
 const Title = styled.h2`
