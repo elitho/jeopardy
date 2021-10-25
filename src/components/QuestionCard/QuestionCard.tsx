@@ -6,7 +6,7 @@ import smiley_correct from 'icons/emoji_1.svg'
 import smiley_wrong from 'icons/emoji_2.svg'
 import { colors, colorMap, contrastColorMap } from "shared";
 
-const Box = styled.div<{ active: boolean, zindex: string }>`
+const PerspectiveBox = styled.div<{ active: boolean, zindex: string }>`
   height: 120px;
   width: 194px;
   perspective: 1000px;
@@ -150,7 +150,7 @@ export const QuestionCard = ({question, categoryIndex, questionIndex, categoryNa
   }
 
   return (
-    <Box active={active} zindex={zindex}>
+    <PerspectiveBox active={active} zindex={zindex}>
       <Card active={active} categoryIndex={categoryIndex} questionIndex={questionIndex}>
         <Front onClick={open}>
           <Span>{question.value + ' ' + question.entity}</Span>
@@ -166,6 +166,6 @@ export const QuestionCard = ({question, categoryIndex, questionIndex, categoryNa
           </ButtonContainer>
         </Back>
       </Card>
-    </Box>
+    </PerspectiveBox>
   );
 }
