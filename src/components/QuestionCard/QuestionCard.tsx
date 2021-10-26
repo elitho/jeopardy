@@ -35,8 +35,16 @@ const Card = styled.div<{ categoryIndex: number, questionIndex: number, zindex: 
   : 'none')};
   
   &:hover, &:focus-visible {
-    background: ${props => (props.active ? colorMap[props.categoryIndex] : (props.zindex === '0' ? contrastColorMap[props.categoryIndex] : colorMap[props.categoryIndex]))};
-    border-color: ${props => (props.active ? contrastColorMap[props.categoryIndex] : colorMap[props.categoryIndex])};
+    background: ${props => (props.active 
+    ? colorMap[props.categoryIndex] 
+    : (props.zindex === '0' 
+      ? contrastColorMap[props.categoryIndex] 
+      : colorMap[props.categoryIndex]))};
+    border-color: ${props => (props.active 
+    ? contrastColorMap[props.categoryIndex] 
+    : (props.zindex === '0'
+      ? colorMap[props.categoryIndex]
+      : contrastColorMap[props.categoryIndex]))};
     outline: none;
   }
 `
