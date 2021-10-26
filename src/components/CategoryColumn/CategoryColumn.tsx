@@ -1,6 +1,12 @@
 import styled from "styled-components";
 import { Category } from "types";
 import { QuestionCard } from "components";
+import { colors } from "shared";
+
+type Props = {
+  category: Category,
+  categoryIndex: number
+}
 
 const Container = styled.div`
   display: flex;
@@ -10,19 +16,22 @@ const Container = styled.div`
 
 const Title = styled.h2`
   margin: 0;
+  border-radius: 2px;
+  border: 1px solid ${colors.BEKK_SORT};
+  box-shadow: 2px 2px 2px 0 ${colors.OVERSKYET_KONTRAST};
 `
 
-export const CategoryColumn = ({category, categoryIndex}: { category: Category, categoryIndex: number }) => {
+export const CategoryColumn = ({category: {name, questions}, categoryIndex}: Props) => {
   return (
     <Container>
-      <Title>{category.name}</Title>
-      {category.questions.map((question, index) => (
+      <Title>{name}</Title>
+      {questions.map((question, index) => (
         <QuestionCard
           key={index}
           question={question}
           categoryIndex={categoryIndex}
           questionIndex={index}
-          categoryName={category.name}
+          categoryName={name}
         />
       ))}
     </Container>

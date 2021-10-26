@@ -1,10 +1,10 @@
 import { Question } from "types";
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import cross_black from 'icons/cross_black.svg';
-import smiley_correct from 'icons/emoji_1.svg'
-import smiley_wrong from 'icons/emoji_2.svg'
-import { colors, colorMap, contrastColorMap } from "shared";
+import smiley_correct from 'icons/happy_smiley.svg'
+import smiley_wrong from 'icons/sad_smiley.svg'
+import { colorMap, colors, contrastColorMap } from "shared";
 
 const PerspectiveBox = styled.div<{ active: boolean, zindex: string }>`
   height: 120px;
@@ -13,7 +13,7 @@ const PerspectiveBox = styled.div<{ active: boolean, zindex: string }>`
   z-index: ${({zindex}) => zindex};
 `
 
-const Card = styled.div<{ categoryIndex: number, questionIndex: number, active: boolean }>`
+const Card = styled.div<{ categoryIndex: number, questionIndex: number, zindex: string, active: boolean }>`
   font-weight: 100;
   height: 100%;
   width: 100%;
@@ -25,16 +25,19 @@ const Card = styled.div<{ categoryIndex: number, questionIndex: number, active: 
   position: relative;
   cursor: ${({active}) => (active ? 'auto' : 'pointer')};
   border-radius: ${({active}) => (active ? '2px' : '8px')};
+  border: 2px solid ${({categoryIndex}) => (contrastColorMap[categoryIndex])};
   box-shadow: ${({active}) => (active ? '-1px 1px 1px 0 ' + colors.OVERSKYET_KONTRAST : '2px 2px 2px 0 ' + colors.OVERSKYET_KONTRAST)};
-  transform: ${props => (props.active
-  ? 'rotateY(180deg) ' +
-  'scale(5.9, 5.9) ' +
-  'translateX(' + ((36.7 - (props.categoryIndex * 18.3)) * -1) + '%) ' +
-  'translateY(' + (35.5 - (props.questionIndex * 19.2)) + '%)'
+  transform: ${({active, categoryIndex, questionIndex}) => (active
+  ? 'rotateY(' + (categoryIndex < 3 ? '180deg' : '-180deg') + ') ' +
+  'scale(5.95, 5.95) ' +
+  'translateX(' + ((36.7 - (categoryIndex * 18.3)) * -1) + '%) ' +
+  'translateY(' + (34.9 - (questionIndex * 19.1)) + '%)'
   : 'none')};
   
-  &:hover {
-    background: ${props => (props.active ? colorMap[props.categoryIndex] : contrastColorMap[props.categoryIndex])};
+  &:hover, &:focus-visible {
+    background: ${props => (props.active ? colorMap[props.categoryIndex] : (props.zindex === '0' ? contrastColorMap[props.categoryIndex] : colorMap[props.categoryIndex]))};
+    border-color: ${props => (props.active ? contrastColorMap[props.categoryIndex] : colorMap[props.categoryIndex])};
+    outline: none;
   }
 `
 
@@ -130,11 +133,45 @@ type Props = {
   categoryName: string,
 }
 
-export const QuestionCard = ({question, categoryIndex, questionIndex, categoryName}: Props) => {
+const calcTabIndex = (categoryIndex: number, questionIndex: number) => {
+  let index = 1;
+  switch (categoryIndex) {
+    case 1:
+      index = 6;
+      break;
+    case 2:
+      index = 11;
+      break;
+    case 3:
+      index = 16;
+      break;
+    case 4:
+      index = 21;
+      break;
+  }
+  return index + questionIndex;
+}
+
+export const QuestionCard = ({
+                               question: {value, entity, question, answer},
+                               categoryIndex,
+                               questionIndex,
+                               categoryName
+                             }: Props) => {
   const [active, setActive] = useState(false);
   const [zindex, setZindex] = useState('0');
 
-  useEffect(() => console.log(zindex), [zindex]);
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        close();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+    }
+  }, []);
 
   const open = () => {
     setActive(true);
@@ -143,22 +180,36 @@ export const QuestionCard = ({question, categoryIndex, questionIndex, categoryNa
 
   const close = () => {
     setActive(false);
-    console.log(zindex);
     setTimeout(() => {
       setZindex('0');
     }, 600);
   }
 
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter') {
+      open();
+    }
+  }
+
   return (
     <PerspectiveBox active={active} zindex={zindex}>
-      <Card active={active} categoryIndex={categoryIndex} questionIndex={questionIndex}>
+      <Card
+        tabIndex={calcTabIndex(categoryIndex, questionIndex)}
+        onKeyPress={handleKeyPress}
+        active={active}
+        categoryIndex={categoryIndex}
+        questionIndex={questionIndex}
+        zindex={zindex}
+      >
         <Front onClick={open}>
-          <Span>{question.value + ' ' + question.entity}</Span>
+          <Span>{value + ' ' + entity}</Span>
         </Front>
         <Back>
-          <CloseButton onClick={close}><Img src={cross_black} alt={'close button'}/></CloseButton>
-          <Title>{categoryName + ' - ' + question.value + ' ' + question.entity}</Title>
-          <QuestionSpan>{question.question}</QuestionSpan>
+          <CloseButton onClick={close}>
+            <Img src={cross_black} alt={'close button'}/>
+          </CloseButton>
+          <Title>{categoryName + ' - ' + value + ' ' + entity}</Title>
+          <QuestionSpan>{question}</QuestionSpan>
           <AnswerSpan>Se svar</AnswerSpan>
           <ButtonContainer>
             <SmileyButton><Smiley src={smiley_wrong} alt={'Wrong smiley'}/></SmileyButton>
