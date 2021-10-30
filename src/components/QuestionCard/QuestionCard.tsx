@@ -1,6 +1,6 @@
 import { Question } from 'types';
 import styled from 'styled-components';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import cross_black from 'icons/cross_black.svg';
 import smiley_correct from 'icons/happy_smiley.svg'
 import smiley_wrong from 'icons/sad_smiley.svg'
@@ -194,6 +194,15 @@ export const QuestionCard = ({
   const [zindex, setZindex] = useState('0');
   const [showAnswer, setShowAnswer] = useState(false);
 
+  const close = useCallback(() => {
+    setActive(false);
+    setAnyQuestionActive(false);
+    setTimeout(() => {
+      setZindex('0');
+      setShowAnswer(false);
+    }, 600);
+  }, [setAnyQuestionActive]);
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -204,21 +213,12 @@ export const QuestionCard = ({
     return () => {
       window.removeEventListener('keydown', onKeyDown);
     }
-  }, []);
+  }, [close]);
 
   const open = () => {
     setActive(true);
     setAnyQuestionActive(true);
     setZindex('3');
-  }
-
-  const close = () => {
-    setActive(false);
-    setAnyQuestionActive(false);
-    setTimeout(() => {
-      setZindex('0');
-      setShowAnswer(false);
-    }, 600);
   }
 
   const show = () => {
