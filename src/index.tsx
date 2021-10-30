@@ -56,6 +56,10 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
   
+  *:focus {
+    outline: none;
+  }
+  
   #root {
     height: 100%;
     width: 100%;
