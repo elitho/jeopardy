@@ -1,15 +1,16 @@
 import styled from "styled-components";
-import { CategoryColumn } from "components";
+import { CategoryColumn } from "components/index";
 import { testGameObject } from "shared";
 
 const Container = styled.div`
-  padding: 4rem;
+  padding: var(--big);
   display: flex;
   flex-direction: row;
-  height: 100%;
   width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
   justify-content: center;
-  gap: 1rem;
+  gap: var(--regular);
   text-align: center;
 `
 

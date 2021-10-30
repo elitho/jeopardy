@@ -1,10 +1,12 @@
-import { Question } from "types";
-import styled from "styled-components";
-import React, { useEffect, useState } from "react";
+import { Question } from 'types';
+import styled from 'styled-components';
+import React, { useEffect, useState } from 'react';
 import cross_black from 'icons/cross_black.svg';
 import smiley_correct from 'icons/happy_smiley.svg'
 import smiley_wrong from 'icons/sad_smiley.svg'
-import { colorMap, colors, contrastColorMap } from "shared";
+import { activeColorMap, colorMap, colors, contrastColorMap } from 'shared';
+import { useRecoilState } from "recoil";
+import { anyQuestionActive } from "shared/questionActiveAtom";
 
 const PerspectiveBox = styled.div<{ active: boolean, zindex: string }>`
   height: 120px;
@@ -26,30 +28,30 @@ const Card = styled.div<{ categoryIndex: number, questionIndex: number, zindex: 
   cursor: ${({active}) => (active ? 'auto' : 'pointer')};
   border-radius: ${({active}) => (active ? '2px' : '8px')};
   border: 2px solid ${({categoryIndex}) => (contrastColorMap[categoryIndex])};
-  box-shadow: ${({active}) => (active ? '-1px 1px 1px 0 ' + colors.OVERSKYET_KONTRAST : '2px 2px 2px 0 ' + colors.OVERSKYET_KONTRAST)};
+  box-shadow: ${({active}) => (active ? '0 2px ' + colors.SKYGGE : '0 6px ' + colors.SKYGGE)};
   transform: ${({active, categoryIndex, questionIndex}) => (active
-  ? 'rotateY(' + (categoryIndex < 3 ? '180deg' : '-180deg') + ') ' +
-  'scale(5.95, 5.95) ' +
-  'translateX(' + ((36.7 - (categoryIndex * 18.3)) * -1) + '%) ' +
-  'translateY(' + (34.9 - (questionIndex * 19.1)) + '%)'
-  : 'none')};
+    ? 'rotateY(' + (categoryIndex < 3 ? '180deg' : '-180deg') + ') ' +
+    'scale(6, 6) ' +
+    'translateX(' + ((36.7 - (categoryIndex * 18.3)) * -1) + '%) ' +
+    'translateY(' + (33.8 - (questionIndex * 18.9)) + '%)'
+    : 'none')};
   
   &:hover, &:focus-visible {
-    background: ${props => (props.active 
-    ? colorMap[props.categoryIndex] 
-    : (props.zindex === '0' 
-      ? contrastColorMap[props.categoryIndex] 
-      : colorMap[props.categoryIndex]))};
-    border-color: ${props => (props.active 
-    ? contrastColorMap[props.categoryIndex] 
-    : (props.zindex === '0'
+    background: ${props => (props.active
       ? colorMap[props.categoryIndex]
-      : contrastColorMap[props.categoryIndex]))};
+      : (props.zindex === '0'
+        ? contrastColorMap[props.categoryIndex]
+        : colorMap[props.categoryIndex]))};
+    border-color: ${props => (props.active
+      ? contrastColorMap[props.categoryIndex]
+      : (props.zindex === '0'
+        ? colorMap[props.categoryIndex]
+        : contrastColorMap[props.categoryIndex]))};
     outline: none;
   }
 `
 
-const Front = styled.div`
+const Front = styled.div<{ categoryIndex: number }>`
   backface-visibility: hidden;
   position: absolute;
   top: 0;
@@ -60,14 +62,20 @@ const Front = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 8px;
+  
+  &:active {
+    background: ${({categoryIndex}) => (activeColorMap[categoryIndex])};
+  }
 `
 
 const Span = styled.span`
-  font-size: 24px;
+  font-size: 4.5rem;
+  font-family: var(--newzald);
 `
 
 const Back = styled.div`
-  padding: 0.6rem 1rem;
+  padding: 10px var(--regular);
   backface-visibility: hidden;
   position: absolute;
   top: 0;
@@ -80,53 +88,87 @@ const Back = styled.div`
   transform: rotateY(180deg);
 `
 
-const CloseButton = styled.button`
+const CloseButton = styled.button<{ categoryIndex: number }>`
+  height: 10px;
+  width: 10px;
   background: none;
   border: none;
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 6px;
+  right: 6px;
   padding: 0;
   margin: 0;
   cursor: pointer;
+  
+  &:hover, &:active, &:focus-visible {
+    outline: none;
+    border-radius: 50%;
+    background: ${({categoryIndex}) => (contrastColorMap[categoryIndex])};
+  }
+  
+  &:active {
+    background: ${({categoryIndex}) => (activeColorMap[categoryIndex])};
+  }
 `
 
 const Img = styled.img`
-  height: 20px;
-  width: 20px;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 6px;
+  height: 6px;
 `
 
 const Title = styled.h1`
   margin: 0;
-  font-family: NewzaldBook, Newzald-Book, Newzald;
-  font-size: 14px;
+  font-size: .875rem;
   font-weight: 100;
 `
 
 const QuestionSpan = styled.span`
-  font-size: 8px;
+  font-size: 0.5rem;
 `
 
-const AnswerSpan = styled.span`
-  font-size: 8px;
+const AnswerSpan = styled.span<{ showAnswer: boolean, categoryIndex: number }>`
+  font-size: 0.5rem;
+  width: fit-content;
+  margin: 0 auto;
+  border-bottom: ${({categoryIndex}) => ('1px solid ' + colorMap[categoryIndex])};
+  
+  &:hover, &:focus-visible {
+    outline: none;
+    cursor: ${({showAnswer}) => (showAnswer ? 'default' : 'pointer')};
+    border-bottom: ${({showAnswer, categoryIndex}) => (showAnswer
+      ? '1px solid ' + colorMap[categoryIndex]
+      : '1px solid ' + contrastColorMap[categoryIndex])};
+  }
 `
 
 const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  gap: 1rem;
+  gap: var(--small);
 `
 
-
-const SmileyButton = styled.button`
+const SmileyButton = styled.button<{ green?: boolean }>`
   margin: 0;
   padding: 0;
   border: none;
   background: none;
-  height: 15px;
-  box-shadow: 1px 1px 1px 0 #525252;
+  height: var(--regular);
   cursor: pointer;
+  border: 1px solid ${({green}) => (green ? colors.GRØNN_KONTRAST : colors.SOLNEDGANG_KONTRAST)};
+  
+  &:hover, &:focus-visible {
+    outline: none;
+    backface-visibility: hidden;
+    border: 1px solid ${({green}) => (green ? colors.GRØNN_AKTIV : colors.SOLNEDGANG_AKTIV)};
+  }
+  
+  &:active {
+    border: 1px solid ${({green}) => (green ? colors.GRØNN_SMILEY_AKTIV : colors.SOLNEDGANG_SMILEY_AKTIV)};
+  }
 `
 
 const Smiley = styled.img`
@@ -141,33 +183,16 @@ type Props = {
   categoryName: string,
 }
 
-const calcTabIndex = (categoryIndex: number, questionIndex: number) => {
-  let index = 1;
-  switch (categoryIndex) {
-    case 1:
-      index = 6;
-      break;
-    case 2:
-      index = 11;
-      break;
-    case 3:
-      index = 16;
-      break;
-    case 4:
-      index = 21;
-      break;
-  }
-  return index + questionIndex;
-}
-
 export const QuestionCard = ({
                                question: {value, entity, question, answer},
                                categoryIndex,
                                questionIndex,
                                categoryName
                              }: Props) => {
+  const [isAnyQuestionActive, setAnyQuestionActive] = useRecoilState(anyQuestionActive);
   const [active, setActive] = useState(false);
   const [zindex, setZindex] = useState('0');
+  const [showAnswer, setShowAnswer] = useState(false);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -183,45 +208,70 @@ export const QuestionCard = ({
 
   const open = () => {
     setActive(true);
+    setAnyQuestionActive(true);
     setZindex('3');
   }
 
   const close = () => {
     setActive(false);
+    setAnyQuestionActive(false);
     setTimeout(() => {
       setZindex('0');
+      setShowAnswer(false);
     }, 600);
   }
 
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const show = () => {
+    setShowAnswer(true);
+  }
+
+  const handleCardKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Enter') {
       open();
+    }
+  }
+
+  const handleAnswerKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter') {
+      show();
     }
   }
 
   return (
     <PerspectiveBox active={active} zindex={zindex}>
       <Card
-        tabIndex={calcTabIndex(categoryIndex, questionIndex)}
-        onKeyPress={handleKeyPress}
+        tabIndex={ isAnyQuestionActive ? -1 : (((categoryIndex * 5) + 1) + questionIndex)}
+        onKeyDown={handleCardKeyDown}
         active={active}
         categoryIndex={categoryIndex}
         questionIndex={questionIndex}
         zindex={zindex}
       >
-        <Front onClick={open}>
-          <Span>{value + ' ' + entity}</Span>
+        <Front categoryIndex={categoryIndex} onClick={open}>
+          <Span>{value}</Span>
         </Front>
         <Back>
-          <CloseButton onClick={close}>
+          <CloseButton tabIndex={active ? 1 : -1} categoryIndex={categoryIndex} onClick={close}>
             <Img src={cross_black} alt={'close button'}/>
           </CloseButton>
           <Title>{categoryName + ' - ' + value + ' ' + entity}</Title>
           <QuestionSpan>{question}</QuestionSpan>
-          <AnswerSpan>Se svar</AnswerSpan>
+          <AnswerSpan
+            tabIndex={active ? 2 : -1}
+            categoryIndex={categoryIndex}
+            showAnswer={showAnswer}
+            onClick={show}
+            onKeyDown={handleAnswerKeyDown}
+          >
+            {showAnswer ? 'Svar: ' + answer : 'Se svar'}
+          </AnswerSpan>
           <ButtonContainer>
-            <SmileyButton><Smiley src={smiley_wrong} alt={'Wrong smiley'}/></SmileyButton>
-            <SmileyButton><Smiley src={smiley_correct} alt={'Correct smiley'}/></SmileyButton>
+            <SmileyButton tabIndex={active ? 3 : -1}>
+              <Smiley src={smiley_wrong} alt={'Wrong smiley'} />
+            </SmileyButton>
+            <SmileyButton green tabIndex={active ? 4 : -1}>
+              <Smiley src={smiley_correct} alt={'Correct smiley'} />
+            </SmileyButton>
           </ButtonContainer>
         </Back>
       </Card>

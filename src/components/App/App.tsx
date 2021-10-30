@@ -1,10 +1,13 @@
 import styled from 'styled-components';
 import { Route, Switch } from "react-router-dom";
 import { MainPage, TestPage } from "pages";
+import { colors } from "shared";
 
 const AppContainer = styled.div`
-  max-width: 1600px;
+  width: 100%;
   margin: 0 auto;
+  height: 100%;
+  background: ${colors.BAKGRUNN};
 `
 
 export const App = () => {

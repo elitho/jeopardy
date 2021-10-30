@@ -1,9 +1,13 @@
+import '@bekk/storybook/build/lib/fonts/webfonts.css';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { HelmetProvider } from 'react-helmet-async';
+import { RecoilRoot } from 'recoil';
 import { App } from 'components';
-import { createGlobalStyle } from "styled-components";
-import { BrowserRouter } from "react-router-dom";
-import { colors } from "shared";
+import { createGlobalStyle } from 'styled-components';
+import { BrowserRouter } from 'react-router-dom';
+import { colors } from 'shared';
 
 const GlobalStyle = createGlobalStyle`
   html {
@@ -15,24 +19,26 @@ const GlobalStyle = createGlobalStyle`
     height: 100%;
     width: 100%;
     margin: 0;
-    font-family: DINOT-Light, sans-serif;
+    font-family: var(--din-light);
     font-weight: 100;
     color: ${colors.BEKK_SORT};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     box-sizing: border-box;
     overflow: hidden;
+    --din-light: 'FFDINWebProLight', sans-serif;
+    --din-italic: 'DINW01LightItalic', sans-serif;
+    --din-regular: 'DINW01Regular', sans-serif;
+    --din-medium: 'DINW01Medium', sans-serif;
+    --newzald: 'NewZaldBook', serif;
+    --small: 8px;
+    --regular: 16px;
+    --medium: 32px;
+    --big: 64px;
   }
   
-  h1 {
-    font-weight: 100;
-  }
-  
-  h2 {
-    font-weight: 100;
-  }
-  
-  h3 {
+  h1, h2, h3 {
+    font-family: var(--newzald);
     font-weight: 100;
   }
   
@@ -58,9 +64,13 @@ const GlobalStyle = createGlobalStyle`
 
 ReactDOM.render(
   <React.StrictMode>
-    <GlobalStyle />
+    <GlobalStyle/>
     <BrowserRouter>
-      <App />
+      <HelmetProvider>
+        <RecoilRoot>
+          <App/>
+        </RecoilRoot>
+      </HelmetProvider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')

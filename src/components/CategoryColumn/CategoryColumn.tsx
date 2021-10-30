@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Category } from "types";
-import { QuestionCard } from "components";
+import { QuestionCard } from "components/index";
 import { colors } from "shared";
 
 type Props = {
@@ -11,14 +11,16 @@ type Props = {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--regular);
 `
 
 const Title = styled.h2`
   margin: 0;
-  border-radius: 2px;
-  border: 1px solid ${colors.BEKK_SORT};
-  box-shadow: 2px 2px 2px 0 ${colors.OVERSKYET_KONTRAST};
+  font-family: var(--din-medium);
+  background: ${colors.BEKK_HVIT};
+  border-radius: 8px;
+  border: 2px solid ${colors.OVERSKYET_KONTRAST};
+  box-shadow: 0 5px ${colors.SKYGGE};
 `
 
 export const CategoryColumn = ({category: {name, questions}, categoryIndex}: Props) => {
@@ -27,7 +29,7 @@ export const CategoryColumn = ({category: {name, questions}, categoryIndex}: Pro
       <Title>{name}</Title>
       {questions.map((question, index) => (
         <QuestionCard
-          key={index}
+          key={categoryIndex + index}
           question={question}
           categoryIndex={categoryIndex}
           questionIndex={index}
