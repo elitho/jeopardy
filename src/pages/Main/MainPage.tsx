@@ -1,10 +1,11 @@
 import { GameBoard } from "components";
 import styled from "styled-components";
 
-const Div = styled.div`
+const Text = styled.p`
+  font-size: 2rem;
   margin: 0 auto;
-  padding-top: 50%;
-  width: fit-content;
+  padding: 50% var(--regular) 0;
+  width: 100%;
 `
 
 export const MainPage = () => {
@@ -12,7 +13,11 @@ export const MainPage = () => {
 
   return (
     <>
-      {isMobileView ? <Div>Kom deg på en pc, Sander</Div> : <GameBoard />}
+      {isMobileView ?
+        <Text>
+          This app is not for mobile. Open on desktop.
+        </Text>
+        : <GameBoard />}
     </>
   );
 }
