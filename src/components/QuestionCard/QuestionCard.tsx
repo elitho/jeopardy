@@ -6,8 +6,7 @@ import smiley_correct from 'icons/happy_smiley.svg'
 import smiley_wrong from 'icons/sad_smiley.svg'
 import { activeColorMap, colorMap, colors, contrastColorMap } from 'shared';
 import { useRecoilState } from "recoil";
-import { anyQuestionActive } from "shared/questionActiveAtom";
-import { cardRefsArray } from "shared/cardRefsAtom";
+import { anyQuestionActive, closeAll, cardRefsArray } from "shared/questionCardAtoms";
 import { ArrowKey, ArrowKeys } from "types/util";
 
 const PerspectiveBox = styled.div<{ active: boolean, zindex: string }>`
@@ -197,6 +196,7 @@ export const QuestionCard = ({
                              }: Props) => {
   const [isAnyQuestionActive, setAnyQuestionActive] = useRecoilState(anyQuestionActive);
   const [cardRefs, setCardRefs] = useRecoilState(cardRefsArray);
+  const [closeAllCards, setCloseAll] = useRecoilState(closeAll);
   const [active, setActive] = useState(false);
   const [zindex, setZindex] = useState('0');
   const [showAnswer, setShowAnswer] = useState(false);
@@ -214,6 +214,7 @@ export const QuestionCard = ({
   }, [cardRef, cardRefs, setCardRefs]);
 
   const close = useCallback(() => {
+    setCloseAll(false);
     setActive(false);
     setAnyQuestionActive(false);
     if (active) {
@@ -222,7 +223,13 @@ export const QuestionCard = ({
         setShowAnswer(false);
       }, 600);
     }
-  }, [setAnyQuestionActive, active]);
+  }, [setAnyQuestionActive, active, setCloseAll]);
+
+  useEffect(() => {
+    if (closeAllCards) {
+      close();
+    }
+  }, [close, closeAllCards]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -237,6 +244,7 @@ export const QuestionCard = ({
   }, [close]);
 
   const open = () => {
+    setCloseAll(false);
     setActive(true);
     setAnyQuestionActive(true);
     setZindex('3');

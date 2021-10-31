@@ -1,24 +1,46 @@
 import styled from "styled-components";
 import { CategoryColumn } from "components/index";
 import { testGameObject } from "shared";
+import { useEffect, useRef } from "react";
+import { useRecoilState } from "recoil";
+import { closeAll } from "shared/questionCardAtoms";
 
 const Container = styled.div`
-  padding: var(--big);
   display: flex;
   flex-direction: row;
-  width: 100%;
+  width: fit-content;
   max-width: 1600px;
-  margin: 0 auto;
+  margin: var(--big) auto;
   justify-content: center;
   gap: var(--regular);
   text-align: center;
 `
 
 export const GameBoard = () => {
+  const [, setCloseAll] = useRecoilState(closeAll);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onClick = (event: MouseEvent) => {
+      if (containerRef && !containerRef.current?.contains(event.target as Node)) {
+        setCloseAll(true);
+      }
+    };
+    document.addEventListener('click', onClick);
+    return () => {
+      document.removeEventListener('click', onClick);
+    }
+  }, [setCloseAll]);
+
   return (
-    <Container>
+    <Container ref={containerRef}>
       {testGameObject.map((category, index) => (
-        <CategoryColumn key={index} category={category} categoryIndex={index} numberOfCategories={testGameObject.length} />
+        <CategoryColumn
+          key={index}
+          category={category}
+          categoryIndex={index}
+          numberOfCategories={testGameObject.length}
+        />
       ))}
     </Container>
   );

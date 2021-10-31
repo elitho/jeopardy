@@ -8,6 +8,7 @@ const AppContainer = styled.div`
   margin: 0 auto;
   height: 100%;
   background: ${colors.BAKGRUNN};
+  overflow: hidden;
 `
 
 export const App = () => {
