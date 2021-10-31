@@ -245,7 +245,7 @@ export const QuestionCard = ({
   }
 
   const handleCardKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' || event.key === ' ') {
       open();
     } else if (event.key === 'ArrowUp') {
       handleArrowKeyPress(ArrowKeys.UP);
@@ -292,7 +292,7 @@ export const QuestionCard = ({
   }
 
   const handleAnswerKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' || event.key === ' ') {
       show();
     }
   }
