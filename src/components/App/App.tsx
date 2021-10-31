@@ -9,6 +9,9 @@ const AppContainer = styled.div`
   height: 100%;
   background: ${colors.BAKGRUNN};
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
 export const App = () => {

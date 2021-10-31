@@ -10,7 +10,6 @@ const Container = styled.div`
   flex-direction: row;
   width: fit-content;
   max-width: 1600px;
-  margin: var(--big) auto;
   justify-content: center;
   gap: var(--regular);
   text-align: center;
