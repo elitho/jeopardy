@@ -1,12 +1,14 @@
 import { Question } from 'types';
 import styled from 'styled-components';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { createRef, useCallback, useEffect, useState } from 'react';
 import cross_black from 'icons/cross_black.svg';
 import smiley_correct from 'icons/happy_smiley.svg'
 import smiley_wrong from 'icons/sad_smiley.svg'
 import { activeColorMap, colorMap, colors, contrastColorMap } from 'shared';
 import { useRecoilState } from "recoil";
 import { anyQuestionActive } from "shared/questionActiveAtom";
+import { cardRefsArray } from "shared/cardRefsAtom";
+import { ArrowKey, ArrowKeys } from "types/util";
 
 const PerspectiveBox = styled.div<{ active: boolean, zindex: string }>`
   height: 120px;
@@ -181,18 +183,35 @@ type Props = {
   categoryIndex: number,
   questionIndex: number,
   categoryName: string,
+  numberOfQuestions: number,
+  numberOfCategories: number,
 }
 
 export const QuestionCard = ({
                                question: {value, entity, question, answer},
                                categoryIndex,
                                questionIndex,
-                               categoryName
+                               categoryName,
+                               numberOfQuestions,
+                               numberOfCategories
                              }: Props) => {
   const [isAnyQuestionActive, setAnyQuestionActive] = useRecoilState(anyQuestionActive);
+  const [cardRefs, setCardRefs] = useRecoilState(cardRefsArray);
   const [active, setActive] = useState(false);
   const [zindex, setZindex] = useState('0');
   const [showAnswer, setShowAnswer] = useState(false);
+  const cardRef = createRef<HTMLDivElement>();
+  const myPosition = ((categoryIndex * numberOfQuestions) + 1) + questionIndex;
+  const totalNumberOfQuestions = numberOfCategories * numberOfQuestions;
+  const myIndexInRefsArray = totalNumberOfQuestions - myPosition;
+
+  useEffect(() => {
+    if (cardRef.current != null && !cardRefs.includes(cardRef.current)) {
+      let refs = [...cardRefs];
+      refs.push(cardRef.current);
+      setCardRefs(refs);
+    }
+  }, [cardRef, cardRefs, setCardRefs]);
 
   const close = useCallback(() => {
     setActive(false);
@@ -228,6 +247,47 @@ export const QuestionCard = ({
   const handleCardKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Enter') {
       open();
+    } else if (event.key === 'ArrowUp') {
+      handleArrowKeyPress(ArrowKeys.UP);
+    } else if (event.key === 'ArrowDown') {
+      handleArrowKeyPress(ArrowKeys.DOWN);
+    } else if (event.key === 'ArrowRight') {
+      handleArrowKeyPress(ArrowKeys.RIGHT);
+    } else if (event.key === 'ArrowLeft') {
+      handleArrowKeyPress(ArrowKeys.LEFT);
+    }
+  }
+
+  const handleArrowKeyPress = (arrowKey: ArrowKey) => {
+    let nextCardToFocusIndex = 0;
+    if (arrowKey === ArrowKeys.UP) {
+      nextCardToFocusIndex = myIndexInRefsArray + 1;
+      if (nextCardToFocusIndex % numberOfQuestions === 0) {
+        nextCardToFocusIndex -= numberOfQuestions;
+      }
+    } else if (arrowKey === ArrowKeys.DOWN) {
+      nextCardToFocusIndex = myIndexInRefsArray - 1;
+      if ((nextCardToFocusIndex + 1) % numberOfQuestions === 0) {
+        nextCardToFocusIndex += numberOfQuestions;
+      }
+    } else if (arrowKey === ArrowKeys.LEFT) {
+      nextCardToFocusIndex = myIndexInRefsArray+numberOfQuestions;
+      if (nextCardToFocusIndex >= totalNumberOfQuestions) {
+        nextCardToFocusIndex -=  totalNumberOfQuestions;
+      }
+    } else if (arrowKey === ArrowKeys.RIGHT) {
+      nextCardToFocusIndex = myIndexInRefsArray-numberOfQuestions;
+      if (nextCardToFocusIndex <= -1) {
+        nextCardToFocusIndex +=  totalNumberOfQuestions;
+      }
+    }
+    focus(nextCardToFocusIndex);
+  }
+
+  const focus = (index: number) => {
+    const nextCardToFocus = cardRefs[index];
+    if (nextCardToFocus != null) {
+      nextCardToFocus.focus()
     }
   }
 
@@ -240,12 +300,13 @@ export const QuestionCard = ({
   return (
     <PerspectiveBox active={active} zindex={zindex}>
       <Card
-        tabIndex={ isAnyQuestionActive ? -1 : (((categoryIndex * 5) + 1) + questionIndex)}
+        tabIndex={ isAnyQuestionActive ? -1 : myPosition}
         onKeyDown={handleCardKeyDown}
         active={active}
         categoryIndex={categoryIndex}
         questionIndex={questionIndex}
         zindex={zindex}
+        ref={cardRef}
       >
         <Front categoryIndex={categoryIndex} onClick={open}>
           <Span>{value}</Span>

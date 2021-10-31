@@ -3,11 +3,6 @@ import { Category } from "types";
 import { QuestionCard } from "components/index";
 import { colors } from "shared";
 
-type Props = {
-  category: Category,
-  categoryIndex: number
-}
-
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -23,7 +18,13 @@ const Title = styled.h2`
   box-shadow: 0 5px ${colors.SKYGGE};
 `
 
-export const CategoryColumn = ({category: {name, questions}, categoryIndex}: Props) => {
+type Props = {
+  category: Category,
+  categoryIndex: number,
+  numberOfCategories: number
+}
+
+export const CategoryColumn = ({category: {name, questions}, categoryIndex, numberOfCategories}: Props) => {
   return (
     <Container>
       <Title>{name}</Title>
@@ -34,6 +35,8 @@ export const CategoryColumn = ({category: {name, questions}, categoryIndex}: Pro
           categoryIndex={categoryIndex}
           questionIndex={index}
           categoryName={name}
+          numberOfQuestions={questions.length}
+          numberOfCategories={numberOfCategories}
         />
       ))}
     </Container>

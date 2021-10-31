@@ -18,7 +18,7 @@ export const GameBoard = () => {
   return (
     <Container>
       {testGameObject.map((category, index) => (
-        <CategoryColumn key={index} category={category} categoryIndex={index}/>
+        <CategoryColumn key={index} category={category} categoryIndex={index} numberOfCategories={testGameObject.length} />
       ))}
     </Container>
   );
