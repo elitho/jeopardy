@@ -271,12 +271,12 @@ export const QuestionCard = ({
         nextCardToFocusIndex += numberOfQuestions;
       }
     } else if (arrowKey === ArrowKeys.LEFT) {
-      nextCardToFocusIndex = myIndexInRefsArray+numberOfQuestions;
+      nextCardToFocusIndex = myIndexInRefsArray + numberOfQuestions;
       if (nextCardToFocusIndex >= totalNumberOfQuestions) {
         nextCardToFocusIndex -=  totalNumberOfQuestions;
       }
     } else if (arrowKey === ArrowKeys.RIGHT) {
-      nextCardToFocusIndex = myIndexInRefsArray-numberOfQuestions;
+      nextCardToFocusIndex = myIndexInRefsArray - numberOfQuestions;
       if (nextCardToFocusIndex <= -1) {
         nextCardToFocusIndex +=  totalNumberOfQuestions;
       }
