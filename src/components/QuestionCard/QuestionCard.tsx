@@ -216,11 +216,13 @@ export const QuestionCard = ({
   const close = useCallback(() => {
     setActive(false);
     setAnyQuestionActive(false);
-    setTimeout(() => {
-      setZindex('0');
-      setShowAnswer(false);
-    }, 600);
-  }, [setAnyQuestionActive]);
+    if (active) {
+      setTimeout(() => {
+        setZindex('0');
+        setShowAnswer(false);
+      }, 600);
+    }
+  }, [setAnyQuestionActive, active]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
