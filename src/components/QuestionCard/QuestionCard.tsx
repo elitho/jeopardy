@@ -225,7 +225,7 @@ export const QuestionCard = ({
   }, [setAnyQuestionActive, active, setCloseAll]);
 
   useEffect(() => {
-    if (closeAllCards && active) {
+    if (closeAllCards) {
       close();
     }
   }, [close, closeAllCards, active]);
