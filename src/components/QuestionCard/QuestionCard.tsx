@@ -163,7 +163,6 @@ const SmileyButton = styled.button<{ green?: boolean }>`
   
   &:hover, &:focus-visible {
     outline: none;
-    backface-visibility: hidden;
     border: 1px solid ${({green}) => (green ? colors.GRØNN_AKTIV : colors.SOLNEDGANG_AKTIV)};
   }
   
@@ -226,10 +225,10 @@ export const QuestionCard = ({
   }, [setAnyQuestionActive, active, setCloseAll]);
 
   useEffect(() => {
-    if (closeAllCards) {
+    if (closeAllCards && active) {
       close();
     }
-  }, [close, closeAllCards]);
+  }, [close, closeAllCards, active]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
