@@ -228,7 +228,7 @@ export const QuestionCard = ({
     if (closeAllCards) {
       close();
     }
-  }, [close, closeAllCards, active]);
+  }, [close, closeAllCards]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
