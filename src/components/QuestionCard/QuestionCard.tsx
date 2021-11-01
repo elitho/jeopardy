@@ -16,7 +16,7 @@ const PerspectiveBox = styled.div<{ active: boolean, zindex: string }>`
   z-index: ${({zindex}) => zindex};
 `
 
-const Card = styled.div<{ categoryIndex: number, questionIndex: number, zindex: string, active: boolean }>`
+const Card = styled.div<{ categoryIndex: number, questionIndex: number, zindex: string, active: boolean, deactivate: boolean }>`
   font-weight: 100;
   height: 100%;
   width: 100%;
@@ -30,24 +30,26 @@ const Card = styled.div<{ categoryIndex: number, questionIndex: number, zindex: 
   border-radius: ${({active}) => (active ? '2px' : '8px')};
   border: 2px solid ${({categoryIndex}) => (contrastColorMap[categoryIndex])};
   box-shadow: ${({active}) => (active ? '0 2px ' + colors.SKYGGE : '0 6px ' + colors.SKYGGE)};
-  transform: ${({active, categoryIndex, questionIndex}) => (active
+  transform: ${({active, categoryIndex, questionIndex, deactivate}) => (active
     ? 'rotateY(' + (categoryIndex < 3 ? '180deg' : '-180deg') + ') ' +
     'scale(6, 6) ' +
     'translateX(' + ((36.7 - (categoryIndex * 18.3)) * -1) + '%) ' +
     'translateY(' + (33.8 - (questionIndex * 18.9)) + '%)'
-    : 'none')};
+    : (deactivate 
+      ? 'rotateY(' + (categoryIndex < 3 ? '180deg' : '-180deg') + ') ' 
+      : 'none'))};
   
   &:hover, &:focus-visible {
     background: ${props => (props.active
-      ? colorMap[props.categoryIndex]
-      : (props.zindex === '0'
-        ? contrastColorMap[props.categoryIndex]
-        : colorMap[props.categoryIndex]))};
+  ? colorMap[props.categoryIndex]
+  : (props.zindex === '0'
+    ? contrastColorMap[props.categoryIndex]
+    : colorMap[props.categoryIndex]))};
     border-color: ${props => (props.active
-      ? contrastColorMap[props.categoryIndex]
-      : (props.zindex === '0'
-        ? colorMap[props.categoryIndex]
-        : contrastColorMap[props.categoryIndex]))};
+  ? contrastColorMap[props.categoryIndex]
+  : (props.zindex === '0'
+    ? colorMap[props.categoryIndex]
+    : contrastColorMap[props.categoryIndex]))};
     outline: none;
   }
 `
@@ -89,7 +91,8 @@ const Back = styled.div`
   transform: rotateY(180deg);
 `
 
-const CloseButton = styled.button<{ categoryIndex: number }>`
+const CloseButton = styled.button<{ categoryIndex: number, hide?: boolean }>`
+  display: ${({hide}) => hide ? 'none' : 'block'};
   height: 10px;
   width: 10px;
   background: none;
@@ -145,7 +148,8 @@ const AnswerSpan = styled.span<{ showAnswer: boolean, categoryIndex: number }>`
   }
 `
 
-const ButtonContainer = styled.div`
+const ButtonContainer = styled.div<{  hide?: boolean }>`
+  opacity: ${({hide}) => hide ? '0' : '1'}; // -44px
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -197,6 +201,7 @@ export const QuestionCard = ({
   const [cardRefs, setCardRefs] = useRecoilState(cardRefsArray);
   const [closeAllCards, setCloseAll] = useRecoilState(closeAll);
   const [active, setActive] = useState(false);
+  const [deactivate, setDeactivate] = useState(false);
   const [zindex, setZindex] = useState('0');
   const [showAnswer, setShowAnswer] = useState(false);
   const cardRef = createRef<HTMLDivElement>();
@@ -219,10 +224,12 @@ export const QuestionCard = ({
     if (active) {
       setTimeout(() => {
         setZindex('0');
-        setShowAnswer(false);
+        if (!deactivate) {
+          setShowAnswer(false);
+        }
       }, 600);
     }
-  }, [setAnyQuestionActive, active, setCloseAll]);
+  }, [setAnyQuestionActive, active, setCloseAll, deactivate]);
 
   useEffect(() => {
     if (closeAllCards) {
@@ -306,12 +313,29 @@ export const QuestionCard = ({
     }
   }
 
+  const deactivateCard = () => {
+    setDeactivate(true);
+    setCloseAll(false);
+    setActive(false);
+    setAnyQuestionActive(false);
+    if (active) {
+      setTimeout(() => {
+        setZindex('0');
+      }, 600);
+    }
+  }
+  const doStuff = () => {
+    // do other stuff
+    deactivateCard();
+  }
+
   return (
     <PerspectiveBox active={active} zindex={zindex}>
       <Card
         tabIndex={ isAnyQuestionActive ? -1 : myPosition}
         onKeyDown={handleCardKeyDown}
         active={active}
+        deactivate={deactivate}
         categoryIndex={categoryIndex}
         questionIndex={questionIndex}
         zindex={zindex}
@@ -321,7 +345,7 @@ export const QuestionCard = ({
           <Span>{value}</Span>
         </Front>
         <Back>
-          <CloseButton tabIndex={active ? 1 : -1} categoryIndex={categoryIndex} onClick={close}>
+          <CloseButton hide={deactivate} tabIndex={active ? 1 : -1} categoryIndex={categoryIndex} onClick={close}>
             <Img src={cross_black} alt={'close button'}/>
           </CloseButton>
           <Title>{categoryName + ' - ' + value + ' ' + entity}</Title>
@@ -335,8 +359,8 @@ export const QuestionCard = ({
           >
             {showAnswer ? 'Svar: ' + answer : 'Se svar'}
           </AnswerSpan>
-          <ButtonContainer>
-            <SmileyButton tabIndex={active ? 3 : -1}>
+          <ButtonContainer hide={deactivate}>
+            <SmileyButton onClick={doStuff} tabIndex={active ? 3 : -1}>
               <Smiley src={smiley_wrong} alt={'Wrong smiley'} />
             </SmileyButton>
             <SmileyButton green tabIndex={active ? 4 : -1}>
