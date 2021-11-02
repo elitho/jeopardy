@@ -262,13 +262,13 @@ export const QuestionCard = ({
   const handleCardKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Enter' || event.key === ' ') {
       open();
-    } else if (event.key === 'ArrowUp') {
+    } else if (!active && event.key === 'ArrowUp') {
       handleArrowKeyPress(ArrowKeys.UP);
-    } else if (event.key === 'ArrowDown') {
+    } else if (!active && event.key === 'ArrowDown') {
       handleArrowKeyPress(ArrowKeys.DOWN);
-    } else if (event.key === 'ArrowRight') {
+    } else if (!active && event.key === 'ArrowRight') {
       handleArrowKeyPress(ArrowKeys.RIGHT);
-    } else if (event.key === 'ArrowLeft') {
+    } else if (!active && event.key === 'ArrowLeft') {
       handleArrowKeyPress(ArrowKeys.LEFT);
     }
   }
