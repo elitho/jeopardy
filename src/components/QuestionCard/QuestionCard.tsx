@@ -23,7 +23,7 @@ const Card = styled.div<{ categoryIndex: number, questionIndex: number, zindex: 
   background: ${({categoryIndex}) => (colorMap[categoryIndex])};
   transition-duration: .6s;
   transition-timing-function: cubic-bezier(0.68, -0.25, 0.27, 1.25);
-  transition-property: border-radius,box-shadow,transform;
+  transition-property: border-radius, box-shadow, transform;
   transform-style: preserve-3d;
   position: relative;
   cursor: ${({active}) => (active ? 'auto' : 'pointer')};
@@ -31,25 +31,25 @@ const Card = styled.div<{ categoryIndex: number, questionIndex: number, zindex: 
   border: 2px solid ${({categoryIndex}) => (contrastColorMap[categoryIndex])};
   box-shadow: ${({active}) => (active ? '0 2px ' + colors.SKYGGE : '0 6px ' + colors.SKYGGE)};
   transform: ${({active, categoryIndex, questionIndex, deactivate}) => (active
-    ? 'rotateY(' + (categoryIndex < 3 ? '180deg' : '-180deg') + ') ' +
-    'scale(6, 6) ' +
-    'translateX(' + ((36.7 - (categoryIndex * 18.3)) * -1) + '%) ' +
-    'translateY(' + (33.8 - (questionIndex * 18.9)) + '%)'
-    : (deactivate 
-      ? 'rotateY(' + (categoryIndex < 3 ? '180deg' : '-180deg') + ') ' 
-      : 'none'))};
-  
+          ? 'rotateY(' + (categoryIndex < 3 ? '180deg' : '-180deg') + ') ' +
+          'scale(6, 6) ' +
+          'translateX(' + ((36.7 - (categoryIndex * 18.3)) * -1) + '%) ' +
+          'translateY(' + (33.8 - (questionIndex * 18.9)) + '%)'
+          : (deactivate
+                  ? 'rotateY(' + (categoryIndex < 3 ? '180deg' : '-180deg') + ') '
+                  : 'none'))};
+
   &:hover, &:focus-visible {
     background: ${props => (props.active
-  ? colorMap[props.categoryIndex]
-  : (props.zindex === '0'
-    ? contrastColorMap[props.categoryIndex]
-    : colorMap[props.categoryIndex]))};
+            ? colorMap[props.categoryIndex]
+            : (props.zindex === '0'
+                    ? contrastColorMap[props.categoryIndex]
+                    : colorMap[props.categoryIndex]))};
     border-color: ${props => (props.active
-  ? contrastColorMap[props.categoryIndex]
-  : (props.zindex === '0'
-    ? colorMap[props.categoryIndex]
-    : contrastColorMap[props.categoryIndex]))};
+            ? contrastColorMap[props.categoryIndex]
+            : (props.zindex === '0'
+                    ? colorMap[props.categoryIndex]
+                    : contrastColorMap[props.categoryIndex]))};
     outline: none;
   }
 `
@@ -66,7 +66,7 @@ const Front = styled.div<{ categoryIndex: number }>`
   justify-content: center;
   align-items: center;
   border-radius: 8px;
-  
+
   &:active {
     background: ${({categoryIndex}) => (activeColorMap[categoryIndex])};
   }
@@ -91,7 +91,7 @@ const Back = styled.div`
   transform: rotateY(180deg);
 `
 
-const CloseButton = styled.button<{ categoryIndex: number, hide?: boolean }>`
+const CloseButton = styled.button<{ categoryIndex: number, hide: boolean }>`
   display: ${({hide}) => hide ? 'none' : 'block'};
   height: 10px;
   width: 10px;
@@ -103,13 +103,13 @@ const CloseButton = styled.button<{ categoryIndex: number, hide?: boolean }>`
   padding: 0;
   margin: 0;
   cursor: pointer;
-  
+
   &:hover, &:active, &:focus-visible {
     outline: none;
     border-radius: 50%;
     background: ${({categoryIndex}) => (contrastColorMap[categoryIndex])};
   }
-  
+
   &:active {
     background: ${({categoryIndex}) => (activeColorMap[categoryIndex])};
   }
@@ -133,43 +133,42 @@ const QuestionSpan = styled.span`
   font-size: 0.5rem;
 `
 
-const AnswerSpan = styled.span<{ showAnswer: boolean, categoryIndex: number }>`
+const AnswerSpan = styled.span<{ showAnswer: boolean, categoryIndex: number, hideBorder: boolean }>`
   font-size: 0.5rem;
   width: fit-content;
   margin: 0 auto;
-  border-bottom: ${({categoryIndex}) => ('1px solid ' + colorMap[categoryIndex])};
-  
+  border-bottom: ${({categoryIndex, hideBorder}) => (hideBorder ? 'none' : '1px solid ' + colorMap[categoryIndex])};
+
   &:hover, &:focus-visible {
     outline: none;
     cursor: ${({showAnswer}) => (showAnswer ? 'default' : 'pointer')};
-    border-bottom: ${({showAnswer, categoryIndex}) => (showAnswer
-      ? '1px solid ' + colorMap[categoryIndex]
-      : '1px solid ' + contrastColorMap[categoryIndex])};
+    border-bottom: ${({showAnswer, categoryIndex, hideBorder}) => (hideBorder ? 'none' : 
+            (showAnswer ? '1px solid ' + colorMap[categoryIndex] : '1px solid ' + contrastColorMap[categoryIndex]))};
   }
 `
 
-const ButtonContainer = styled.div<{  hide?: boolean }>`
-  opacity: ${({hide}) => hide ? '0' : '1'}; // -44px
+const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
   gap: var(--small);
 `
 
-const SmileyButton = styled.button<{ green?: boolean }>`
+const SmileyButton = styled.button<{ green?: boolean, hide: boolean }>`
+  opacity: ${({hide}) => hide ? '0' : '1'};
   margin: 0;
   padding: 0;
   border: none;
   background: none;
   height: var(--regular);
-  cursor: pointer;
+  cursor: ${({hide}) => hide ? 'default' : 'pointer'};
   border: 1px solid ${({green}) => (green ? colors.GRØNN_KONTRAST : colors.SOLNEDGANG_KONTRAST)};
-  
+
   &:hover, &:focus-visible {
     outline: none;
     border: 1px solid ${({green}) => (green ? colors.GRØNN_AKTIV : colors.SOLNEDGANG_AKTIV)};
   }
-  
+
   &:active {
     border: 1px solid ${({green}) => (green ? colors.GRØNN_SMILEY_AKTIV : colors.SOLNEDGANG_SMILEY_AKTIV)};
   }
@@ -289,12 +288,12 @@ export const QuestionCard = ({
     } else if (arrowKey === ArrowKeys.LEFT) {
       nextCardToFocusIndex = myIndexInRefsArray + numberOfQuestions;
       if (nextCardToFocusIndex >= totalNumberOfQuestions) {
-        nextCardToFocusIndex -=  totalNumberOfQuestions;
+        nextCardToFocusIndex -= totalNumberOfQuestions;
       }
     } else if (arrowKey === ArrowKeys.RIGHT) {
       nextCardToFocusIndex = myIndexInRefsArray - numberOfQuestions;
       if (nextCardToFocusIndex <= -1) {
-        nextCardToFocusIndex +=  totalNumberOfQuestions;
+        nextCardToFocusIndex += totalNumberOfQuestions;
       }
     }
     focus(nextCardToFocusIndex);
@@ -324,15 +323,19 @@ export const QuestionCard = ({
       }, 600);
     }
   }
-  const doStuff = () => {
-    // do other stuff
+
+  const nextTurn = (assignPoints: boolean) => {
+    if (assignPoints) {
+      // Assign points
+    }
+    // Next turn
     deactivateCard();
   }
 
   return (
     <PerspectiveBox active={active} zindex={zindex}>
       <Card
-        tabIndex={ isAnyQuestionActive ? -1 : myPosition}
+        tabIndex={isAnyQuestionActive ? -1 : myPosition}
         onKeyDown={handleCardKeyDown}
         active={active}
         deactivate={deactivate}
@@ -344,8 +347,13 @@ export const QuestionCard = ({
         <Front categoryIndex={categoryIndex} onClick={open}>
           <Span>{value}</Span>
         </Front>
-        <Back>
-          <CloseButton hide={deactivate} tabIndex={active ? 1 : -1} categoryIndex={categoryIndex} onClick={close}>
+        <Back onClick={deactivate && !active ? open : undefined}>
+          <CloseButton
+            hide={deactivate && !active}
+            tabIndex={active ? 1 : -1}
+            categoryIndex={categoryIndex}
+            onClick={close}
+          >
             <Img src={cross_black} alt={'close button'}/>
           </CloseButton>
           <Title>{categoryName + ' - ' + value + ' ' + entity}</Title>
@@ -354,17 +362,18 @@ export const QuestionCard = ({
             tabIndex={active ? 2 : -1}
             categoryIndex={categoryIndex}
             showAnswer={showAnswer}
+            hideBorder={deactivate}
             onClick={show}
             onKeyDown={handleAnswerKeyDown}
           >
             {showAnswer ? 'Svar: ' + answer : 'Se svar'}
           </AnswerSpan>
-          <ButtonContainer hide={deactivate}>
-            <SmileyButton onClick={doStuff} tabIndex={active ? 3 : -1}>
-              <Smiley src={smiley_wrong} alt={'Wrong smiley'} />
+          <ButtonContainer>
+            <SmileyButton hide={deactivate} onClick={!deactivate ? () => nextTurn(false) : undefined} tabIndex={active ? 3 : -1}>
+              <Smiley src={smiley_wrong} alt={'Wrong smiley'}/>
             </SmileyButton>
-            <SmileyButton green tabIndex={active ? 4 : -1}>
-              <Smiley src={smiley_correct} alt={'Correct smiley'} />
+            <SmileyButton green hide={deactivate} onClick={!deactivate ? () => nextTurn(true) : undefined} tabIndex={active ? 4 : -1}>
+              <Smiley src={smiley_correct} alt={'Correct smiley'}/>
             </SmileyButton>
           </ButtonContainer>
         </Back>
