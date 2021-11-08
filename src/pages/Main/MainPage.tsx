@@ -1,5 +1,5 @@
-import { GameBoard } from "components";
-import styled from "styled-components";
+import { GameBoard } from 'components';
+import styled from 'styled-components';
 
 const Text = styled.p`
   font-size: 2rem;

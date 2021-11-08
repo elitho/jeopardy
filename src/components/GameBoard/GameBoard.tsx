@@ -1,9 +1,9 @@
-import styled from "styled-components";
-import { CategoryColumn } from "components/index";
-import { testGameObject } from "shared";
-import { useEffect, useRef } from "react";
-import { useRecoilState } from "recoil";
-import { closeAll } from "shared/questionCardAtoms";
+import styled from 'styled-components';
+import { CategoryColumn } from 'components/index';
+import { testGameObject } from 'shared';
+import { useEffect, useRef } from 'react';
+import { useRecoilState } from 'recoil';
+import { closeAll } from 'shared/questionCardAtoms';
 
 const Container = styled.div`
   display: flex;

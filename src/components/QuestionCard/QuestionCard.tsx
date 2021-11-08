@@ -5,9 +5,9 @@ import cross_black from 'icons/cross_black.svg';
 import smiley_correct from 'icons/happy_smiley.svg'
 import smiley_wrong from 'icons/sad_smiley.svg'
 import { activeColorMap, colorMap, colors, contrastColorMap } from 'shared';
-import { useRecoilState } from "recoil";
+import { useRecoilState } from 'recoil';
 import { anyQuestionActive, closeAll, cardRefsArray } from "shared/questionCardAtoms";
-import { ArrowKey, ArrowKeys } from "types/util";
+import { ArrowKey, ArrowKeys } from 'types/util';
 
 const PerspectiveBox = styled.div<{ active: boolean, zIndex: number }>`
   height: 120px;
@@ -16,7 +16,7 @@ const PerspectiveBox = styled.div<{ active: boolean, zIndex: number }>`
   z-index: ${({zIndex}) => zIndex};
 `
 
-const Card = styled.div<{ categoryIndex: number, questionIndex: number, zIndex: number, active: boolean, deactivate: boolean }>`
+const Card = styled.div<{ active: boolean, deactivate: boolean, categoryIndex: number, questionIndex: number, zIndex: number }>`
   font-weight: 100;
   height: 100%;
   width: 100%;
@@ -30,7 +30,7 @@ const Card = styled.div<{ categoryIndex: number, questionIndex: number, zIndex: 
   border-radius: ${({active}) => (active ? '2px' : '8px')};
   border: 2px solid ${({categoryIndex}) => (contrastColorMap[categoryIndex])};
   box-shadow: ${({active}) => (active ? '0 2px ' + colors.SKYGGE : '0 6px ' + colors.SKYGGE)};
-  transform: ${({active, categoryIndex, questionIndex, deactivate}) => 
+  transform: ${({active, deactivate, categoryIndex, questionIndex}) => 
           transformCard(active, deactivate, categoryIndex, questionIndex)};
 
   &:hover, &:focus-visible {

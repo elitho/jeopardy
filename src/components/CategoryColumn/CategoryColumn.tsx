@@ -1,7 +1,7 @@
-import styled from "styled-components";
-import { Category } from "types";
-import { QuestionCard } from "components/index";
-import { colors } from "shared";
+import styled from 'styled-components';
+import { Category } from 'types';
+import { QuestionCard } from 'components/index';
+import { colors } from 'shared';
 
 const Container = styled.div`
   display: flex;

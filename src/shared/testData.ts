@@ -1,4 +1,4 @@
-import { Category, Entity, Question } from "types";
+import { Category, Entity, Question } from 'types';
 
 const gobQuestion1 = {
   value: 2,
