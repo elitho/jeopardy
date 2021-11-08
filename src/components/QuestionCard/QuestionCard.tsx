@@ -88,7 +88,7 @@ const Back = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) translateZ(1px);
 `
 
 const CloseButton = styled.button<{ categoryIndex: number, hide: boolean }>`
