@@ -9,14 +9,14 @@ import { useRecoilState } from "recoil";
 import { anyQuestionActive, closeAll, cardRefsArray } from "shared/questionCardAtoms";
 import { ArrowKey, ArrowKeys } from "types/util";
 
-const PerspectiveBox = styled.div<{ active: boolean, zindex: string }>`
+const PerspectiveBox = styled.div<{ active: boolean, zIndex: number }>`
   height: 120px;
   width: 194px;
   perspective: 1000px;
-  z-index: ${({zindex}) => zindex};
+  z-index: ${({zIndex}) => zIndex};
 `
 
-const Card = styled.div<{ categoryIndex: number, questionIndex: number, zindex: string, active: boolean, deactivate: boolean }>`
+const Card = styled.div<{ categoryIndex: number, questionIndex: number, zIndex: number, active: boolean, deactivate: boolean }>`
   font-weight: 100;
   height: 100%;
   width: 100%;
@@ -30,26 +30,12 @@ const Card = styled.div<{ categoryIndex: number, questionIndex: number, zindex: 
   border-radius: ${({active}) => (active ? '2px' : '8px')};
   border: 2px solid ${({categoryIndex}) => (contrastColorMap[categoryIndex])};
   box-shadow: ${({active}) => (active ? '0 2px ' + colors.SKYGGE : '0 6px ' + colors.SKYGGE)};
-  transform: ${({active, categoryIndex, questionIndex, deactivate}) => (active
-          ? 'rotateY(' + (categoryIndex < 3 ? '180deg' : '-180deg') + ') ' +
-          'scale(6, 6) ' +
-          'translateX(' + ((36.7 - (categoryIndex * 18.3)) * -1) + '%) ' +
-          'translateY(' + (33.8 - (questionIndex * 18.9)) + '%)'
-          : (deactivate
-                  ? 'rotateY(' + (categoryIndex < 3 ? '180deg' : '-180deg') + ') '
-                  : 'none'))};
+  transform: ${({active, categoryIndex, questionIndex, deactivate}) => 
+          transformCard(active, deactivate, categoryIndex, questionIndex)};
 
   &:hover, &:focus-visible {
-    background: ${props => (props.active
-            ? colorMap[props.categoryIndex]
-            : (props.zindex === '0'
-                    ? contrastColorMap[props.categoryIndex]
-                    : colorMap[props.categoryIndex]))};
-    border-color: ${props => (props.active
-            ? contrastColorMap[props.categoryIndex]
-            : (props.zindex === '0'
-                    ? colorMap[props.categoryIndex]
-                    : contrastColorMap[props.categoryIndex]))};
+    background: ${({active, zIndex, categoryIndex}) => backgroundColor(active, zIndex, categoryIndex)};
+    border-color: ${({active, zIndex, categoryIndex}) => borderColor(active, zIndex, categoryIndex)};
     outline: none;
   }
 `
@@ -88,6 +74,7 @@ const Back = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  // translateZ 1px fixed bug i was having in chrome on mac with backface-visibility
   transform: rotateY(180deg) translateZ(1px);
 `
 
@@ -158,7 +145,6 @@ const SmileyButton = styled.button<{ green?: boolean, hide: boolean }>`
   opacity: ${({hide}) => hide ? '0' : '1'};
   margin: 0;
   padding: 0;
-  border: none;
   background: none;
   height: var(--regular);
   cursor: ${({hide}) => hide ? 'default' : 'pointer'};
@@ -178,6 +164,39 @@ const Smiley = styled.img`
   height: 100%;
   width: 100%;
 `
+
+const transformCard = (active: boolean, deactivate: boolean, categoryIndex: number, questionIndex: number) => {
+  if (active) {
+    return `rotateY(${categoryIndex < 3 ? '180deg' : '-180deg'}) ` +
+      'scale(6,6)' +
+      `translateX(${((36.7 - (categoryIndex * 18.3)) * -1)}%) ` +
+      `translateY(${(33.8 - (questionIndex * 18.9))}%)`;
+  } else if (deactivate) {
+    return `rotateY(${categoryIndex < 3 ? '180deg' : '-180deg'})`;
+  } else {
+    return 'none';
+  }
+}
+
+const backgroundColor = (active: boolean, zIndex: number, categoryIndex: number) => {
+  if (active) {
+    return colorMap[categoryIndex];
+  } else if (zIndex === 0) {
+    return contrastColorMap[categoryIndex];
+  } else {
+    return colorMap[categoryIndex];
+  }
+}
+
+const borderColor = (active: boolean, zIndex: number, categoryIndex: number) => {
+  if (active) {
+    return contrastColorMap[categoryIndex];
+  } else if (zIndex === 0) {
+    return colorMap[categoryIndex];
+  } else {
+    return contrastColorMap[categoryIndex];
+  }
+}
 
 type Props = {
   question: Question,
@@ -201,7 +220,7 @@ export const QuestionCard = ({
   const [closeAllCards, setCloseAll] = useRecoilState(closeAll);
   const [active, setActive] = useState(false);
   const [deactivate, setDeactivate] = useState(false);
-  const [zindex, setZindex] = useState('0');
+  const [zIndex, setZindex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const cardRef = createRef<HTMLDivElement>();
   const myPosition = ((categoryIndex * numberOfQuestions) + 1) + questionIndex;
@@ -222,7 +241,7 @@ export const QuestionCard = ({
     setAnyQuestionActive(false);
     if (active) {
       setTimeout(() => {
-        setZindex('0');
+        setZindex(0);
         if (!deactivate) {
           setShowAnswer(false);
         }
@@ -252,7 +271,7 @@ export const QuestionCard = ({
     setCloseAll(false);
     setActive(true);
     setAnyQuestionActive(true);
-    setZindex('3');
+    setZindex(3);
   }
 
   const show = () => {
@@ -319,7 +338,7 @@ export const QuestionCard = ({
     setAnyQuestionActive(false);
     if (active) {
       setTimeout(() => {
-        setZindex('0');
+        setZindex(0);
       }, 600);
     }
   }
@@ -333,7 +352,7 @@ export const QuestionCard = ({
   }
 
   return (
-    <PerspectiveBox active={active} zindex={zindex}>
+    <PerspectiveBox active={active} zIndex={zIndex}>
       <Card
         tabIndex={isAnyQuestionActive ? -1 : myPosition}
         onKeyDown={handleCardKeyDown}
@@ -341,7 +360,7 @@ export const QuestionCard = ({
         deactivate={deactivate}
         categoryIndex={categoryIndex}
         questionIndex={questionIndex}
-        zindex={zindex}
+        zIndex={zIndex}
         ref={cardRef}
       >
         <Front categoryIndex={categoryIndex} onClick={open}>
