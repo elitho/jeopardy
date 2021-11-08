@@ -64,7 +64,7 @@ const Span = styled.span`
 `
 
 const Back = styled.div`
-  padding: 10px var(--regular);
+  padding: 10px var(--2X);
   backface-visibility: hidden;
   position: absolute;
   top: 0;
@@ -138,7 +138,7 @@ const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  gap: var(--small);
+  gap: var(--1X);
 `
 
 const SmileyButton = styled.button<{ green?: boolean, hide: boolean }>`
@@ -146,7 +146,7 @@ const SmileyButton = styled.button<{ green?: boolean, hide: boolean }>`
   margin: 0;
   padding: 0;
   background: none;
-  height: var(--regular);
+  height: var(--2X);
   cursor: ${({hide}) => hide ? 'default' : 'pointer'};
   border: 1px solid ${({green}) => (green ? colors.GRØNN_KONTRAST : colors.SOLNEDGANG_KONTRAST)};
 

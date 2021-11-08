@@ -6,7 +6,7 @@ import { colors } from 'shared';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  gap: var(--regular);
+  gap: var(--2X);
 `
 
 const Title = styled.h2`

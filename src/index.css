@@ -19,10 +19,14 @@ body {
   --din-regular: 'DINW01Regular', sans-serif;
   --din-medium: 'DINW01Medium', sans-serif;
   --newzald: 'NewZaldBook', serif;
-  --small: 8px;
-  --regular: 16px;
-  --medium: 32px;
-  --big: 64px;
+  --1X: 8px;
+  --2X: 16px;
+  --3X: 24px;
+  --4X: 32px;
+  --5X: 40px;
+  --6X: 48px;
+  --7X: 56px;
+  --8x: 64px;
 }
 
 h1, h2, h3 {
