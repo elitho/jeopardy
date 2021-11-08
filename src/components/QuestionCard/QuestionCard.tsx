@@ -278,6 +278,18 @@ export const QuestionCard = ({
     setShowAnswer(true);
   }
 
+  const deactivateCard = () => {
+    setDeactivate(true);
+    setCloseAll(false);
+    setActive(false);
+    setAnyQuestionActive(false);
+    if (active) {
+      setTimeout(() => {
+        setZindex(0);
+      }, 600);
+    }
+  }
+
   const handleCardKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Enter' || event.key === ' ') {
       open();
@@ -289,6 +301,12 @@ export const QuestionCard = ({
       handleArrowKeyPress(ArrowKeys.RIGHT);
     } else if (!active && event.key === 'ArrowLeft') {
       handleArrowKeyPress(ArrowKeys.LEFT);
+    }
+  }
+
+  const handleAnswerKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      show();
     }
   }
 
@@ -322,24 +340,6 @@ export const QuestionCard = ({
     const nextCardToFocus = cardRefs[index];
     if (nextCardToFocus != null) {
       nextCardToFocus.focus()
-    }
-  }
-
-  const handleAnswerKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      show();
-    }
-  }
-
-  const deactivateCard = () => {
-    setDeactivate(true);
-    setCloseAll(false);
-    setActive(false);
-    setAnyQuestionActive(false);
-    if (active) {
-      setTimeout(() => {
-        setZindex(0);
-      }, 600);
     }
   }
 
