@@ -9,7 +9,7 @@ const Wrapper = styled.div`
   gap: var(--2X);
   position: absolute;
   right: -244px;
-  top: 27%
+  top: 22%
 `
 
 export const ScoreBoard = () => {
