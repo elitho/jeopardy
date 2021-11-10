@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Category } from 'types';
-import { QuestionCard } from 'components/index';
+import { QuestionCard } from 'components';
 import { colors } from 'shared';
 
 const Container = styled.div`
@@ -13,7 +13,7 @@ const Title = styled.h2`
   margin: 0;
   font-family: var(--din-medium);
   background: ${colors.BEKK_HVIT};
-  border-radius: 8px;
+  border-radius: var(--1X);
   border: 2px solid ${colors.OVERSKYET_KONTRAST};
   box-shadow: 0 5px ${colors.SKYGGE};
 `

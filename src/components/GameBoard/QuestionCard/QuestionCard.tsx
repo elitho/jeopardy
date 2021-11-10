@@ -1,13 +1,21 @@
-import { Question } from 'types';
-import styled from 'styled-components';
 import React, { createRef, useCallback, useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { ArrowKey, ArrowKeys, Question } from 'types';
+import styled from 'styled-components';
 import cross_black from 'icons/cross_black.svg';
 import smiley_correct from 'icons/happy_smiley.svg'
 import smiley_wrong from 'icons/sad_smiley.svg'
-import { activeColorMap, colorMap, colors, contrastColorMap } from 'shared';
-import { useRecoilState } from 'recoil';
-import { anyQuestionActive, closeAll, cardRefsArray } from "shared/questionCardAtoms";
-import { ArrowKey, ArrowKeys } from 'types/util';
+import {
+  activeColorMap,
+  anyQuestionActive,
+  cardRefsArray,
+  closeAll,
+  colorMap,
+  colors,
+  contrastColorMap,
+  score,
+  turn
+} from 'shared';
 
 const PerspectiveBox = styled.div<{ active: boolean, zIndex: number }>`
   height: 120px;
@@ -27,7 +35,7 @@ const Card = styled.div<{ active: boolean, deactivate: boolean, categoryIndex: n
   transform-style: preserve-3d;
   position: relative;
   cursor: ${({active}) => (active ? 'auto' : 'pointer')};
-  border-radius: ${({active}) => (active ? '2px' : '8px')};
+  border-radius: ${({active}) => (active ? '2px' : 'var(--1X)')};
   border: 2px solid ${({categoryIndex}) => (contrastColorMap[categoryIndex])};
   box-shadow: ${({active}) => (active ? '0 2px ' + colors.SKYGGE : '0 6px ' + colors.SKYGGE)};
   transform: ${({active, deactivate, categoryIndex, questionIndex}) => 
@@ -51,14 +59,14 @@ const Front = styled.div<{ categoryIndex: number }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 8px;
+  border-radius: var(--1X);
 
   &:active {
     background: ${({categoryIndex}) => (activeColorMap[categoryIndex])};
   }
 `
 
-const Span = styled.span`
+const ValueSpan = styled.span`
   font-size: 4.5rem;
   font-family: var(--newzald);
 `
@@ -131,6 +139,10 @@ const AnswerSpan = styled.span<{ showAnswer: boolean, categoryIndex: number, hid
     cursor: ${({showAnswer}) => (showAnswer ? 'default' : 'pointer')};
     border-bottom: ${({showAnswer, categoryIndex, hideBorder}) => (hideBorder ? 'none' : 
             (showAnswer ? '1px solid ' + colorMap[categoryIndex] : '1px solid ' + contrastColorMap[categoryIndex]))};
+  }
+
+  &:active {
+    border-color: ${({categoryIndex}) => (activeColorMap[categoryIndex])};
   }
 `
 
@@ -218,6 +230,8 @@ export const QuestionCard = ({
   const [isAnyQuestionActive, setAnyQuestionActive] = useRecoilState(anyQuestionActive);
   const [cardRefs, setCardRefs] = useRecoilState(cardRefsArray);
   const [closeAllCards, setCloseAll] = useRecoilState(closeAll);
+  const [turnState, setTurn] = useRecoilState(turn);
+  const [scoreState, setScore] = useRecoilState(score);
   const [active, setActive] = useState(false);
   const [deactivate, setDeactivate] = useState(false);
   const [zIndex, setZindex] = useState(0);
@@ -343,11 +357,22 @@ export const QuestionCard = ({
     }
   }
 
-  const nextTurn = (assignPoints: boolean) => {
+  const nextTurn = (assignPoints: boolean, points: number) => {
+    // get from somewhere else later
+    const numberOfTeams = 4;
+    const teamScoreIndex = turnState - 1;
+
     if (assignPoints) {
-      // Assign points
+      const prevScore = scoreState[teamScoreIndex];
+      let clone = [...scoreState];
+      clone[teamScoreIndex] = prevScore + points;
+      setScore(clone);
     }
-    // Next turn
+    let nextTurn = turnState + 1;
+    if (nextTurn > numberOfTeams) {
+      nextTurn = 1;
+    }
+    setTurn(nextTurn);
     deactivateCard();
   }
 
@@ -364,7 +389,7 @@ export const QuestionCard = ({
         ref={cardRef}
       >
         <Front categoryIndex={categoryIndex} onClick={open}>
-          <Span>{value}</Span>
+          <ValueSpan>{value}</ValueSpan>
         </Front>
         <Back onClick={deactivate && !active ? open : undefined}>
           <CloseButton
@@ -388,11 +413,11 @@ export const QuestionCard = ({
             {showAnswer ? 'Svar: ' + answer : 'Se svar'}
           </AnswerSpan>
           <ButtonContainer>
-            <SmileyButton hide={deactivate} onClick={!deactivate ? () => nextTurn(false) : undefined} tabIndex={active ? 3 : -1}>
-              <Smiley src={smiley_wrong} alt={'Wrong smiley'}/>
+            <SmileyButton hide={deactivate} onClick={!deactivate ? () => nextTurn(false, value) : undefined} tabIndex={active ? 3 : -1}>
+              <Smiley draggable={false} src={smiley_wrong} alt={'Wrong smiley'}/>
             </SmileyButton>
-            <SmileyButton green hide={deactivate} onClick={!deactivate ? () => nextTurn(true) : undefined} tabIndex={active ? 4 : -1}>
-              <Smiley src={smiley_correct} alt={'Correct smiley'}/>
+            <SmileyButton green hide={deactivate} onClick={!deactivate ? () => nextTurn(true, value) : undefined} tabIndex={active ? 4 : -1}>
+              <Smiley draggable={false} src={smiley_correct} alt={'Correct smiley'}/>
             </SmileyButton>
           </ButtonContainer>
         </Back>

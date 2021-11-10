@@ -1,4 +1,4 @@
-import { GameBoard } from 'components';
+import { GameBoard, ScoreBoard, TurnHeader } from 'components';
 import styled from 'styled-components';
 
 const Text = styled.p`
@@ -6,6 +6,14 @@ const Text = styled.p`
   margin: 0 auto;
   padding: 50% var(--2X) 0;
   width: 100%;
+`
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: var(--2X);
+  align-items: center;
+  position: relative;
 `
 
 export const MainPage = () => {
@@ -17,7 +25,11 @@ export const MainPage = () => {
         <Text>
           This app is not for mobile. Open on desktop.
         </Text>
-        : <GameBoard />}
+        : (<Wrapper>
+          <TurnHeader />
+          <GameBoard />
+          <ScoreBoard />
+        </Wrapper>)}
     </>
   );
 }
