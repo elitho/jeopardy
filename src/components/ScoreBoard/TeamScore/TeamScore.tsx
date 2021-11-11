@@ -5,8 +5,8 @@ const Wrapper = styled.div<{ team: number }>`
   background: ${({team}) => colorMap[team + 5]};
   border: 2px solid ${({team}) => contrastColorMap[team + 5]};
   box-shadow: 0 5px ${colors.SKYGGE};
-  border-radius: var(--1X);
-  padding: var(--2X);
+  border-radius: var(--1);
+  padding: var(--2);
   text-align: center;
   font-family: var(--din-medium);
   font-size: 1.5rem;
@@ -16,7 +16,7 @@ const TeamName = styled.span<{ team: number }>`
   display: block;
   border-bottom: 2px solid ${({team}) => contrastColorMap[team + 5]};
   width: fit-content;
-  margin: 0 auto var(--1X) auto;
+  margin: 0 auto var(--1) auto;
   
 `
 

@@ -19,9 +19,9 @@ const Wrapper = styled.h1<{ team: number }>`
   color: ${colors.BEKK_SORT};
   background-color: ${({team}) => colorMap[team + 4]};
   border: 2px solid ${({team}) => contrastColorMap[team + 4]};
-  border-radius: var(--1X);
+  border-radius: var(--1);
   text-align: center;
-  padding: var(--1X) var(--8X);
+  padding: var(--1) var(--8);
   box-shadow: 0 6px ${colors.SKYGGE};
   margin: 0;
   font-size: 4.5rem;

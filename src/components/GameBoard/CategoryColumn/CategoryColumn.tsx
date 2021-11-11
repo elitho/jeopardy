@@ -6,14 +6,14 @@ import { colors } from 'shared';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  gap: var(--2X);
+  gap: var(--2);
 `
 
 const Title = styled.h2`
   margin: 0;
   font-family: var(--din-medium);
   background: ${colors.BEKK_HVIT};
-  border-radius: var(--1X);
+  border-radius: var(--1);
   border: 2px solid ${colors.OVERSKYET_KONTRAST};
   box-shadow: 0 5px ${colors.SKYGGE};
 `

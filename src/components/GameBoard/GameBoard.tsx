@@ -10,7 +10,7 @@ const Container = styled.div`
   width: fit-content;
   max-width: 1600px;
   justify-content: center;
-  gap: var(--2X);
+  gap: var(--2);
   text-align: center;
 `
 

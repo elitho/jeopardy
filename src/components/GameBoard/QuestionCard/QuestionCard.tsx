@@ -35,9 +35,9 @@ const Card = styled.div<{ active: boolean, deactivate: boolean, categoryIndex: n
   transform-style: preserve-3d;
   position: relative;
   cursor: ${({active}) => (active ? 'auto' : 'pointer')};
-  border-radius: ${({active}) => (active ? '2px' : 'var(--1X)')};
+  border-radius: ${({active}) => (active ? 'var(--2px)' : 'var(--1)')};
   border: 2px solid ${({categoryIndex}) => (contrastColorMap[categoryIndex])};
-  box-shadow: ${({active}) => (active ? '0 2px ' + colors.SKYGGE : '0 6px ' + colors.SKYGGE)};
+  box-shadow: ${({active}) => (active ? '0 var(--2px) ' + colors.SKYGGE : '0 var(--105) ' + colors.SKYGGE)};
   transform: ${({active, deactivate, categoryIndex, questionIndex}) => 
           transformCard(active, deactivate, categoryIndex, questionIndex)};
 
@@ -59,7 +59,7 @@ const Front = styled.div<{ categoryIndex: number }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: var(--1X);
+  border-radius: var(--1);
 
   &:active {
     background: ${({categoryIndex}) => (activeColorMap[categoryIndex])};
@@ -72,7 +72,7 @@ const ValueSpan = styled.span`
 `
 
 const Back = styled.div`
-  padding: 10px var(--2X);
+  padding: 10px var(--2);
   backface-visibility: hidden;
   position: absolute;
   top: 0;
@@ -150,7 +150,7 @@ const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  gap: var(--1X);
+  gap: var(--1);
 `
 
 const SmileyButton = styled.button<{ green?: boolean, hide: boolean }>`
@@ -158,17 +158,17 @@ const SmileyButton = styled.button<{ green?: boolean, hide: boolean }>`
   margin: 0;
   padding: 0;
   background: none;
-  height: var(--2X);
+  height: var(--2);
   cursor: ${({hide}) => hide ? 'default' : 'pointer'};
-  border: 1px solid ${({green}) => (green ? colors.GRØNN_KONTRAST : colors.SOLNEDGANG_KONTRAST)};
+  border: var(--1px) solid ${({green}) => (green ? colors.GRØNN_KONTRAST : colors.SOLNEDGANG_KONTRAST)};
 
   &:hover, &:focus-visible {
     outline: none;
-    border: 1px solid ${({green}) => (green ? colors.GRØNN_AKTIV : colors.SOLNEDGANG_AKTIV)};
+    border: var(--1px) solid ${({green}) => (green ? colors.GRØNN_AKTIV : colors.SOLNEDGANG_AKTIV)};
   }
 
   &:active {
-    border: 1px solid ${({green}) => (green ? colors.GRØNN_SMILEY_AKTIV : colors.SOLNEDGANG_SMILEY_AKTIV)};
+    border: var(--1px) solid ${({green}) => (green ? colors.GRØNN_SMILEY_AKTIV : colors.SOLNEDGANG_SMILEY_AKTIV)};
   }
 `
 
