@@ -1,3 +1,4 @@
+import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useRecoilValue } from 'recoil';
 import { colorMap, colors, contrastColorMap, turn } from 'shared';

@@ -1,7 +1,8 @@
+import React from 'react';
+import styled from 'styled-components';
 import { useRecoilValue } from 'recoil';
 import { score } from 'shared';
-import styled from 'styled-components';
-import { TeamScore } from 'components/ScoreBoard/TeamScore';
+import { TeamScore } from 'components';
 
 const Wrapper = styled.div`
   display: flex;

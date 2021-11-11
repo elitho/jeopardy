@@ -1,7 +1,8 @@
+import React from 'react';
 import styled from 'styled-components';
 import { Category } from 'types';
-import { QuestionCard } from 'components';
 import { colors } from 'shared';
+import { QuestionCard } from 'components';
 
 const Container = styled.div`
   display: flex;

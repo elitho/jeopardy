@@ -1,8 +1,8 @@
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { CategoryColumn } from 'components';
-import { closeAll, testGameObject } from 'shared';
-import { useEffect, useRef } from 'react';
 import { useRecoilState } from 'recoil';
+import { closeAll, testGameObject } from 'shared';
+import { CategoryColumn } from 'components';
 
 const Container = styled.div`
   display: flex;

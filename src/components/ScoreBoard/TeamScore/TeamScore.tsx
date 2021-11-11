@@ -1,3 +1,4 @@
+import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { colorMap, colors, contrastColorMap } from 'shared';
 

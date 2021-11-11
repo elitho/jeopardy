@@ -1,10 +1,10 @@
 import React, { createRef, useCallback, useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
-import { ArrowKey, ArrowKeys, Question } from 'types';
 import styled from 'styled-components';
+import { useRecoilState } from 'recoil';
 import cross_black from 'icons/cross_black.svg';
 import smiley_correct from 'icons/happy_smiley.svg'
 import smiley_wrong from 'icons/sad_smiley.svg'
+import { ArrowKey, ArrowKeys, Question } from 'types';
 import {
   activeColorMap,
   anyQuestionActive,

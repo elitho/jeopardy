@@ -1,5 +1,6 @@
-import { GameBoard, ScoreBoard, TurnHeader } from 'components';
+import React from 'react';
 import styled from 'styled-components';
+import { GameBoard, ScoreBoard, TurnHeader } from 'components';
 
 const Text = styled.p`
   font-size: 2rem;

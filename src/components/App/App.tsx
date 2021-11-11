@@ -1,7 +1,8 @@
-import styled from 'styled-components';
+import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { MainPage, TestPage } from 'pages';
+import styled from 'styled-components';
 import { colors } from 'shared';
+import { MainPage, TestPage } from 'pages';
 
 const AppContainer = styled.div`
   width: 100%;
