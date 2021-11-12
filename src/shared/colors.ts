@@ -22,7 +22,7 @@ export const colors = {
   REGN_AKTIV: '#7a9ab8',
   OVERSKYET: '#E7E7E7',
   OVERSKYET_KONTRAST: '#CECECE',
-  OVERSKYET_AKTIV: '#cccccc',
+  OVERSKYET_AKTIV: '#B3B3B3',
   SOL: '#FFF2AD',
   SOL_KONTRAST: '#FFF02B',
   SOL_AKTIV: '#ffee00',
