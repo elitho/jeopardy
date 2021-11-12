@@ -19,7 +19,7 @@ export const ScoreBoard = () => {
   return (
     <Wrapper>
       {scoreArray.map((score, index) => (
-        <TeamScore score={score} team={index}/>
+        <TeamScore key={index} score={score} team={index}/>
         ))}
     </Wrapper>
   );

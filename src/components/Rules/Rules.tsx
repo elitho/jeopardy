@@ -28,8 +28,8 @@ const Img = styled.img`
 
 const RulesWrapper = styled.div`
   position: absolute;
-  top: -40px;
-  height: 100vh;
+  top: -120px;
+  height: 120vh;
   width: 100vw;
   background: hsl(0 0% 0% / 75%);
   z-index: 4;
