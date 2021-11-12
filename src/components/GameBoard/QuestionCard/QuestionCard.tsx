@@ -37,7 +37,7 @@ const Card = styled.div<{ active: boolean, deactivate: boolean, categoryIndex: n
   cursor: ${({active}) => (active ? 'auto' : 'pointer')};
   border-radius: ${({active}) => (active ? 'var(--2px)' : 'var(--1)')};
   border: 2px solid ${({categoryIndex}) => (contrastColorMap[categoryIndex])};
-  box-shadow: ${({active}) => (active ? '0 var(--2px) ' + colors.SKYGGE : '0 var(--105) ' + colors.SKYGGE)};
+  box-shadow: ${({active}) => (active ? '0 var(--2px) ' + colors.SKYGGE : '0 6px ' + colors.SKYGGE)};
   transform: ${({active, deactivate, categoryIndex, questionIndex}) => 
           transformCard(active, deactivate, categoryIndex, questionIndex)};
 
@@ -368,10 +368,7 @@ export const QuestionCard = ({
       clone[teamScoreIndex] = prevScore + points;
       setScore(clone);
     }
-    let nextTurn = turnState + 1;
-    if (nextTurn > numberOfTeams) {
-      nextTurn = 1;
-    }
+    const nextTurn = (turnState % numberOfTeams) + 1;
     setTurn(nextTurn);
     deactivateCard();
   }
