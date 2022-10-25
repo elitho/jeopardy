@@ -49,6 +49,7 @@ const Card = styled.div<{ active: boolean, deactivate: boolean, categoryIndex: n
 `
 
 const Front = styled.div<{ categoryIndex: number }>`
+  transform-style: preserve-3d;
   backface-visibility: hidden;
   position: absolute;
   top: 0;
@@ -72,6 +73,7 @@ const ValueSpan = styled.span`
 `
 
 const Back = styled.div`
+  transform-style: preserve-3d;
   padding: 10px var(--2);
   backface-visibility: hidden;
   position: absolute;
@@ -82,8 +84,7 @@ const Back = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  // translateZ 1px fixed bug i was having in chrome on mac with backface-visibility
-  transform: rotateY(180deg) translateZ(1px);
+  transform: rotateY(180deg);
 `
 
 const CloseButton = styled.button<{ categoryIndex: number, hide: boolean }>`
