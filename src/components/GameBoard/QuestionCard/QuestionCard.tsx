@@ -233,9 +233,10 @@ export const QuestionCard = ({
   const [turnState, setTurn] = useRecoilState(turn);
   const [scoreState, setScore] = useRecoilState(score);
   const [active, setActive] = useState(false);
-  const [deactivate, setDeactivate] = useState(false);
+  const [deactivated, setDeactivated] = useState(false);
   const [zIndex, setZindex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [test, setTest] = useState('false');
   const cardRef = createRef<HTMLDivElement>();
   const myPosition = ((categoryIndex * numberOfQuestions) + 1) + questionIndex;
   const totalNumberOfQuestions = numberOfCategories * numberOfQuestions;
@@ -256,12 +257,12 @@ export const QuestionCard = ({
     if (active) {
       setTimeout(() => {
         setZindex(0);
-        if (!deactivate) {
+        if (!deactivated) {
           setShowAnswer(false);
         }
       }, 600);
     }
-  }, [setAnyQuestionActive, active, setCloseAll, deactivate]);
+  }, [setAnyQuestionActive, active, setCloseAll, deactivated]);
 
   useEffect(() => {
     if (closeAllCards) {
@@ -293,7 +294,7 @@ export const QuestionCard = ({
   }
 
   const deactivateCard = () => {
-    setDeactivate(true);
+    setDeactivated(true);
     setCloseAll(false);
     setActive(false);
     setAnyQuestionActive(false);
@@ -370,6 +371,8 @@ export const QuestionCard = ({
     }
     const nextTurn = (turnState % numberOfTeams) + 1;
     setTurn(nextTurn);
+    const ting = `Lag ${turnState} svarte ${assignPoints ? 'RIKTIG' : 'FEIL'}`
+    setTest(ting);
     deactivateCard();
   }
 
@@ -379,7 +382,7 @@ export const QuestionCard = ({
         tabIndex={isAnyQuestionActive ? -1 : myPosition}
         onKeyDown={handleCardKeyDown}
         active={active}
-        deactivate={deactivate}
+        deactivate={deactivated}
         categoryIndex={categoryIndex}
         questionIndex={questionIndex}
         zIndex={zIndex}
@@ -388,9 +391,9 @@ export const QuestionCard = ({
         <Front categoryIndex={categoryIndex} onClick={open}>
           <ValueSpan>{value}</ValueSpan>
         </Front>
-        <Back onClick={deactivate && !active ? open : undefined}>
+        <Back onClick={deactivated && !active ? open : undefined}>
           <CloseButton
-            hide={deactivate && !active}
+            hide={deactivated && !active}
             tabIndex={active ? 1 : -1}
             categoryIndex={categoryIndex}
             onClick={close}
@@ -403,19 +406,22 @@ export const QuestionCard = ({
             tabIndex={active ? 2 : -1}
             categoryIndex={categoryIndex}
             showAnswer={showAnswer}
-            hideBorder={deactivate}
+            hideBorder={deactivated}
             onClick={show}
             onKeyDown={handleAnswerKeyDown}
           >
             {showAnswer ? 'Svar: ' + answer : 'Se svar'}
           </AnswerSpan>
           <ButtonContainer>
-            <SmileyButton hide={deactivate} onClick={!deactivate ? () => nextTurn(false, value) : undefined} tabIndex={active ? 3 : -1}>
+            <SmileyButton hide={deactivated} onClick={!deactivated ? () => nextTurn(false, value) : undefined} tabIndex={active ? 3 : -1}>
               <Smiley draggable={false} src={smiley_wrong} alt={'Wrong smiley'}/>
             </SmileyButton>
-            <SmileyButton green hide={deactivate} onClick={!deactivate ? () => nextTurn(true, value) : undefined} tabIndex={active ? 4 : -1}>
+            <SmileyButton green hide={deactivated} onClick={!deactivated ? () => nextTurn(true, value) : undefined} tabIndex={active ? 4 : -1}>
               <Smiley draggable={false} src={smiley_correct} alt={'Correct smiley'}/>
             </SmileyButton>
+            {deactivated && <span>
+              {test}
+            </span>}
           </ButtonContainer>
         </Back>
       </Card>
